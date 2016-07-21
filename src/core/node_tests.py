@@ -171,3 +171,23 @@ class MatrixMultiplyNodesTests(unittest.TestCase):
              numericalGradient(operation, in1, out, np.array([[0., 0., 0.], [0., 0., 1.]]))[1, 0]]
             ]
         assert_array_almost_equal(in1.gradient, np.array(grad), 5)
+
+
+class MaxNodeTests(unittest.TestCase):
+    def testForward(self):
+        in1 = Connection(np.array([-1., 1., 0.]))
+        in2 = Connection(np.array([1., 0., -5.]))
+        out = Connection()
+        operation = MaxNode(in1, in2, out)
+        operation.forward()
+        assert_array_equal(out.value, np.array([1., 1., 0.]))
+
+    def testBackward(self):
+        in1 = Connection(np.array([-1., 1., 5.]))
+        in2 = Connection(np.array([1., 0., -5.]))
+        out = Connection(gradient=np.array([7., 8., 9.]))
+        operation = MaxNode(in1, in2, out)
+        operation.forward()
+        operation.backward()
+        assert_array_almost_equal(in1.gradient, numericalGradient(operation, in1, out))
+        assert_array_almost_equal(in2.gradient, numericalGradient(operation, in2, out))

@@ -4,7 +4,7 @@ import numpy as np
 from numpy.testing import *
 from simulation import *
 from asserts import *
-import loss
+import losses
 
 
 class SimulationTests(unittest.TestCase):
@@ -33,7 +33,7 @@ class SimulationTests(unittest.TestCase):
         ctx = SimulationContext()
         x = Connection(np.array([-2.85, 0.86, 0.28])[:, np.newaxis])
         one_hot_y = Connection(np.array([0., 0., 1.])[:, np.newaxis])
-        cost = loss.softmax(ctx, x, one_hot_y)
+        cost = losses.softmax(ctx, x, one_hot_y)
         ctx.forward()
         assert_array_almost_equal(cost.value, np.array([1.04]), 3)
 
@@ -41,7 +41,7 @@ class SimulationTests(unittest.TestCase):
         ctx = SimulationContext()
         x = Connection(np.array([-2.85, 0.86, 0.28]))
         one_hot_y = Connection(np.array([0., 0., 1.]))
-        cost = loss.softmax(ctx, x, one_hot_y)
+        cost = losses.softmax(ctx, x, one_hot_y)
         ctx.forward()
         ctx.backward()
         numerical_gradient = [

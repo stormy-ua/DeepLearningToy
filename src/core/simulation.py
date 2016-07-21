@@ -50,6 +50,12 @@ class SimulationContext:
     def add_input_connection(self, connection: Connection, operation: Node):
         self.adjacencyInMap[connection] = operation
 
+    def variable(self, value):
+        return Connection(value)
+
+    def constant(self, value):
+        return Connection(value)
+
     def sum(self, in1: Connection, in2: Connection):
         out = Connection()
         operation = SumNode(in1, in2, out)
@@ -62,6 +68,15 @@ class SimulationContext:
     def multiply(self, in1: Connection, in2: Connection):
         out = Connection()
         operation = MultiplyNode(in1, in2, out)
+        self.nodes.append(operation)
+        self.add_input_connection(in1, operation)
+        self.add_input_connection(in2, operation)
+        self.adjacencyOutMap[out] = operation
+        return out
+
+    def matrix_multiply(self, in1: Connection, in2: Connection):
+        out = Connection()
+        operation = MatrixMultiplyNode(in1, in2, out)
         self.nodes.append(operation)
         self.add_input_connection(in1, operation)
         self.add_input_connection(in2, operation)
@@ -100,3 +115,14 @@ class SimulationContext:
         self.add_input_connection(in1, operation)
         self.adjacencyOutMap[out] = operation
         return out
+
+    def max(self, in1: Connection, in2: Connection):
+        out = Connection()
+        operation = MaxNode(in1, in2, out)
+        self.nodes.append(operation)
+        self.add_input_connection(in1, operation)
+        self.add_input_connection(in2, operation)
+        self.adjacencyOutMap[out] = operation
+        return out
+
+

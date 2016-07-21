@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 
 
 class Connection:
-    value = None
+    _value = None
     _gradient = None
 
     def __init__(self, value=None, gradient=None):
@@ -11,12 +11,20 @@ class Connection:
         self._gradient = gradient
 
     @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, v):
+        self._value = v
+
+    @property
     def gradient(self):
         return self._gradient
 
     @gradient.setter
     def gradient(self, value):
-        if self.gradient == None or value is None:
+        if self.gradient is None or value is None:
             self._gradient = value
         else:
             self._gradient += value
@@ -147,6 +155,21 @@ class MatrixMultiplyNode(Node):
         self.in2.gradient = self.in1.value.T.dot(self.out.gradient)
 
 
+class MaxNode(Node):
+    def __init__(self, in1: Connection, in2: Connection, out: Connection):
+        super().__init__([in1, in2], [out])
+        self.in1 = in1
+        self.in2 = in2
+        self.out = out
+
+    def forward(self):
+        super().forward()
+        self.out.value = np.maximum(self.in1.value, self.in2.value)
+
+    def backward(self):
+        self.in1.gradient = np.array(self.in1.value > self.in2.value, dtype=np.float32) * self.out.gradient
+        self.in2.gradient = np.array(self.in2.value > self.in1.value, dtype=np.float32) * self.out.gradient
+
 class Node2:
     __metaclass__ = ABCMeta
 
@@ -157,7 +180,7 @@ class Node2:
     def backward(self, dy): pass
 
 
-class ReLuNode(Node2):
+class ReLuNode2(Node2):
     def forward(self, x):
         self.x = x
         return np.maximum(0, x)
