@@ -7,6 +7,14 @@ class SimulationContext:
     adjacencyInMap = dict()
     adjacencyOutMap = dict()
 
+    @property
+    def outputs(self):
+        return [i for i in self.adjacencyOutMap if i not in self.adjacencyInMap]
+
+    @property
+    def inputs(self):
+        return [i for i in self.adjacencyInMap if i not in self.adjacencyOutMap]
+
     def get_adjacent_nodes(self, node: Node):
         return [self.adjacencyOutMap[output] for output in node.outputs if output in self.adjacencyOutMap]
 
@@ -43,18 +51,24 @@ class SimulationContext:
         [node.forward() for node in self.sort_topologically()]
 
     def backward(self):
-        for i in [i for i in self.adjacencyOutMap if i not in self.adjacencyInMap]:
+        for i in self.outputs:
             i.reset_gradient(1)
         [node.backward() for node in reversed(self.sort_topologically())]
+
+    def forward_backward(self):
+        self.forward()
+        self.backward()
 
     def add_input_connection(self, connection: Connection, operation: Node):
         self.adjacencyInMap[connection] = operation
 
-    def variable(self, value):
-        return Connection(value)
+    @staticmethod
+    def variable(value, name=""):
+        return Variable(value, name=name)
 
-    def constant(self, value):
-        return Connection(value)
+    @staticmethod
+    def constant(value, name=""):
+        return Constant(value, name=name)
 
     def sum(self, in1: Connection, in2: Connection):
         out = Connection()
@@ -122,6 +136,14 @@ class SimulationContext:
         self.nodes.append(operation)
         self.add_input_connection(in1, operation)
         self.add_input_connection(in2, operation)
+        self.adjacencyOutMap[out] = operation
+        return out
+
+    def broadcast(self, in1: Connection, axis=1):
+        out = Connection()
+        operation = BroadcastNode(in1, out, axis)
+        self.nodes.append(operation)
+        self.add_input_connection(in1, operation)
         self.adjacencyOutMap[out] = operation
         return out
 

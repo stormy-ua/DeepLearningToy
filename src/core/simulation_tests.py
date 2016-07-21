@@ -25,8 +25,7 @@ class SimulationTests(unittest.TestCase):
         sum1 = context.sum(in1, in2)
         mul1 = context.multiply(sum1, Connection(4))
         div1 = context.div(mul1, Connection(8))
-        context.forward()
-        context.backward()
+        context.forward_backward()
         self.assertEqual(in1.gradient, .5)
 
     def testForwardSoftmax(self):
@@ -42,8 +41,7 @@ class SimulationTests(unittest.TestCase):
         x = Connection(np.array([-2.85, 0.86, 0.28]))
         one_hot_y = Connection(np.array([0., 0., 1.]))
         cost = losses.softmax(ctx, x, one_hot_y)
-        ctx.forward()
-        ctx.backward()
+        ctx.forward_backward()
         numerical_gradient = [
             numericalGradient(ctx, x, cost, np.array([1., 0., 0.])),
             numericalGradient(ctx, x, cost, np.array([0., 1., 0.])),

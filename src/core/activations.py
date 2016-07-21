@@ -1,6 +1,6 @@
 from simulation import *
 
 
-def relu(ctx: SimulationContext, x: Connection):
-    relu1 = ctx.max(x, ctx.variable(0))
+def relu(ctx: SimulationContext, x: Connection, name=""):
+    relu1 = ctx.max(x, ctx.constant(0, name))
     return relu1

@@ -5,10 +5,20 @@ from abc import ABCMeta, abstractmethod
 class Connection:
     _value = None
     _gradient = None
+    _name = ""
 
-    def __init__(self, value=None, gradient=None):
-        self.value = value
+    def __init__(self, value=None, gradient=None, name=""):
+        self._value = value
         self._gradient = gradient
+        self._name = name
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = value
 
     @property
     def value(self):
@@ -31,6 +41,19 @@ class Connection:
 
     def reset_gradient(self, to_value=None):
         self._gradient = to_value
+
+    def __str__(self):
+        return self._name
+
+
+class Variable(Connection):
+    def __init__(self, value=None, gradient=None, name=""):
+        super().__init__(value, gradient, name)
+
+
+class Constant(Connection):
+    def __init__(self, value=None, gradient=None, name=""):
+        super().__init__(value, gradient, name)
 
 
 class Node:
@@ -139,6 +162,23 @@ class ReduceSumNode(Node):
         self.in1.gradient = np.ones(shape=self.in1.value.shape) * self.out.gradient
 
 
+class BroadcastNode(Node):
+    def __init__(self, in1: Connection, out: Connection, axis=1):
+        super().__init__([in1], [out])
+        if axis != 1:
+            raise "Axis other than 1 are not supported for now"
+        self.in1 = in1
+        self.out = out
+        self.axis = axis
+
+    def forward(self):
+        super().forward()
+        self.out.value = self.in1.value[:, np.newaxis]
+
+    def backward(self):
+        self.in1.gradient = np.sum(self.out.gradient, axis=1)
+
+
 class MatrixMultiplyNode(Node):
     def __init__(self, in1: Connection, in2: Connection, out: Connection):
         super().__init__([in1, in2], [out])
@@ -169,6 +209,7 @@ class MaxNode(Node):
     def backward(self):
         self.in1.gradient = np.array(self.in1.value > self.in2.value, dtype=np.float32) * self.out.gradient
         self.in2.gradient = np.array(self.in2.value > self.in1.value, dtype=np.float32) * self.out.gradient
+
 
 class Node2:
     __metaclass__ = ABCMeta
