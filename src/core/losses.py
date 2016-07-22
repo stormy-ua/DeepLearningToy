@@ -1,7 +1,7 @@
 from simulation import *
 
 
-def softmax(ctx: SimulationContext, x: Connection, one_hot_y: Connection, samples_count = 1):
+def softmax(ctx: SimulationContext, x: Connection, one_hot_y: Connection, samples_count = 1, name=""):
     exp1 = ctx.exp(x)
     reduce_sum1 = ctx.reduce_sum(exp1, axis=0)
     mul1 = ctx.multiply(exp1, one_hot_y)
@@ -10,5 +10,5 @@ def softmax(ctx: SimulationContext, x: Connection, one_hot_y: Connection, sample
     log1 = ctx.log(div1)
     mul2 = ctx.multiply(log1, ctx.constant(-1))
     reduce_sum3 = ctx.reduce_sum(mul2)
-    div2 = ctx.div(reduce_sum3, ctx.constant(samples_count))
+    div2 = ctx.div(reduce_sum3, ctx.constant(samples_count), name)
     return div2

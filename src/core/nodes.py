@@ -166,7 +166,7 @@ class BroadcastNode(Node):
     def __init__(self, in1: Connection, out: Connection, axis=1):
         super().__init__([in1], [out])
         if axis != 1:
-            raise "Axis other than 1 are not supported for now"
+            raise Exception("Axis other than 1 are not supported for now")
         self.in1 = in1
         self.out = out
         self.axis = axis

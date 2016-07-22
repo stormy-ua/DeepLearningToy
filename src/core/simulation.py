@@ -15,6 +15,10 @@ class SimulationContext:
     def inputs(self):
         return [i for i in self.adjacencyInMap if i not in self.adjacencyOutMap]
 
+    @property
+    def input_variables(self):
+        return [n for n in self.inputs if isinstance(n, Variable)]
+
     def get_adjacent_nodes(self, node: Node):
         return [self.adjacencyOutMap[output] for output in node.outputs if output in self.adjacencyOutMap]
 
@@ -63,11 +67,11 @@ class SimulationContext:
         self.adjacencyInMap[connection] = operation
 
     @staticmethod
-    def variable(value, name=""):
+    def variable(value=None, name=""):
         return Variable(value, name=name)
 
     @staticmethod
-    def constant(value, name=""):
+    def constant(value=None, name=""):
         return Constant(value, name=name)
 
     def sum(self, in1: Connection, in2: Connection):
@@ -97,8 +101,8 @@ class SimulationContext:
         self.adjacencyOutMap[out] = operation
         return out
 
-    def div(self, in1: Connection, in2: Connection):
-        out = Connection()
+    def div(self, in1: Connection, in2: Connection, name=""):
+        out = Connection(name=name)
         operation = DivNode(in1, in2, out)
         self.nodes.append(operation)
         self.add_input_connection(in1, operation)
