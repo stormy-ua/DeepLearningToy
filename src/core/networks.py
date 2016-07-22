@@ -44,10 +44,8 @@ class NeuralNetwork:
 
         return layer_output
 
-    def forward_backward(self, X, one_hot_y):
-        self.x_in.value = X.T
-        self.one_hot_y_in.value = one_hot_y
-        self.ctx.forward_backward()
+    def forward_backward(self, params=dict()):
+        self.ctx.forward_backward(params)
 
     def predict(self, X):
         self.x_in.value = X.T

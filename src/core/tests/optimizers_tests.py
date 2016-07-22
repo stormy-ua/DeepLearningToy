@@ -25,7 +25,7 @@ class SgdOptimizerTest(unittest.TestCase):
         network = NeuralNetwork(X.shape[1], 64, 10)
 
         for epoch in range(0, 500):
-            sgd(network, X, one_hot_y, learningRate=0.05)
+            sgd(network, X, one_hot_y, learning_rate=0.05)
 
         network.one_hot_y_in.value = one_hot_y
         y_pred = np.argmax(network.predict(X), axis=0)
@@ -46,7 +46,7 @@ class SgdOptimizerTest(unittest.TestCase):
         network = NeuralNetwork(X.shape[1], 64, 3)
 
         for epoch in range(0, 300):
-            sgd(network, X, one_hot_y, learningRate=0.01)
+            sgd(network, X, one_hot_y, learning_rate=0.01)
 
         network.one_hot_y_in.value = one_hot_y
         y_pred = np.argmax(network.predict(X), axis=0)

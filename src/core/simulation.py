@@ -51,7 +51,10 @@ class SimulationContext:
 
         return sorted_nodes
 
-    def forward(self):
+    def forward(self, params=dict()):
+        for p, v in params.items():
+            p.value = v
+
         [node.forward() for node in self.sort_topologically()]
 
     def backward(self):
@@ -59,8 +62,8 @@ class SimulationContext:
             i.reset_gradient(1)
         [node.backward() for node in reversed(self.sort_topologically())]
 
-    def forward_backward(self):
-        self.forward()
+    def forward_backward(self, params=dict()):
+        self.forward(params)
         self.backward()
 
     def add_input_connection(self, connection: Connection, operation: Node):
@@ -74,57 +77,40 @@ class SimulationContext:
     def constant(value=None, name=""):
         return Constant(value, name=name)
 
-    def sum(self, in1: Connection, in2: Connection):
+    def add_unary_op(self, op, in1: Connection):
         out = Connection()
-        operation = SumNode(in1, in2, out)
+        operation = op(in1, out)
+        self.nodes.append(operation)
+        self.add_input_connection(in1, operation)
+        self.adjacencyOutMap[out] = operation
+        return out
+
+    def add_binary_op(self, op, in1: Connection, in2: Connection):
+        out = Connection()
+        operation = op(in1, in2, out)
         self.nodes.append(operation)
         self.add_input_connection(in1, operation)
         self.add_input_connection(in2, operation)
         self.adjacencyOutMap[out] = operation
         return out
+
+    def sum(self, in1: Connection, in2: Connection):
+        return self.add_binary_op(SumNode, in1, in2)
 
     def multiply(self, in1: Connection, in2: Connection):
-        out = Connection()
-        operation = MultiplyNode(in1, in2, out)
-        self.nodes.append(operation)
-        self.add_input_connection(in1, operation)
-        self.add_input_connection(in2, operation)
-        self.adjacencyOutMap[out] = operation
-        return out
+        return self.add_binary_op(MultiplyNode, in1, in2)
 
     def matrix_multiply(self, in1: Connection, in2: Connection):
-        out = Connection()
-        operation = MatrixMultiplyNode(in1, in2, out)
-        self.nodes.append(operation)
-        self.add_input_connection(in1, operation)
-        self.add_input_connection(in2, operation)
-        self.adjacencyOutMap[out] = operation
-        return out
+        return self.add_binary_op(MatrixMultiplyNode, in1, in2)
 
     def div(self, in1: Connection, in2: Connection, name=""):
-        out = Connection(name=name)
-        operation = DivNode(in1, in2, out)
-        self.nodes.append(operation)
-        self.add_input_connection(in1, operation)
-        self.add_input_connection(in2, operation)
-        self.adjacencyOutMap[out] = operation
-        return out
+        return self.add_binary_op(DivNode, in1, in2)
 
     def exp(self, in1: Connection):
-        out = Connection()
-        operation = ExpNode(in1, out)
-        self.nodes.append(operation)
-        self.add_input_connection(in1, operation)
-        self.adjacencyOutMap[out] = operation
-        return out
+        return self.add_unary_op(ExpNode, in1)
 
     def log(self, in1: Connection):
-        out = Connection()
-        operation = LogNode(in1, out)
-        self.nodes.append(operation)
-        self.add_input_connection(in1, operation)
-        self.adjacencyOutMap[out] = operation
-        return out
+        return self.add_unary_op(LogNode, in1)
 
     def reduce_sum(self, in1: Connection, axis = None):
         out = Connection()
@@ -135,13 +121,7 @@ class SimulationContext:
         return out
 
     def max(self, in1: Connection, in2: Connection):
-        out = Connection()
-        operation = MaxNode(in1, in2, out)
-        self.nodes.append(operation)
-        self.add_input_connection(in1, operation)
-        self.add_input_connection(in2, operation)
-        self.adjacencyOutMap[out] = operation
-        return out
+        return self.add_binary_op(MaxNode, in1, in2)
 
     def broadcast(self, in1: Connection, axis=1):
         out = Connection()
