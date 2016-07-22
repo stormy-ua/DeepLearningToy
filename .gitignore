@@ -89,3 +89,4 @@ ENV/
 .ropeproject
 
 .idea
+.ipynb_checkpoints

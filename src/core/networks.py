@@ -49,3 +49,8 @@ class NeuralNetwork:
         self.one_hot_y_in.value = one_hot_y
         self.ctx.forward_backward()
 
+    def predict(self, X):
+        self.x_in.value = X.T
+        self.ctx.forward()
+        return self.output.value
+
