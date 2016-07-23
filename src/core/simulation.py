@@ -59,7 +59,7 @@ class SimulationContext:
 
     def backward(self):
         for i in self.outputs:
-            i.reset_gradient(1)
+            i.reset_gradient(to_value=1)
         [node.backward() for node in reversed(self.sort_topologically())]
 
     def forward_backward(self, params=dict()):

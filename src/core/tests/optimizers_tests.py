@@ -50,5 +50,6 @@ class SgdOptimizerTest(unittest.TestCase):
 
         network.one_hot_y_in.value = one_hot_y
         y_pred = np.argmax(network.predict(X), axis=0)
+
         accuracy = np.sum(y_pred == y) / len(y)
         self.assertGreater(accuracy, 0.79)
