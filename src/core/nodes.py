@@ -3,14 +3,12 @@ from abc import ABCMeta, abstractmethod
 
 
 class Connection:
-    _value = None
-    _gradient = None
-    _name = ""
-
     def __init__(self, value=None, gradient=None, name=""):
         self._value = value
         self._gradient = gradient
         self._name = name
+        self._inputs = list()
+        self._outputs = list()
 
     @property
     def name(self):
@@ -39,6 +37,14 @@ class Connection:
         else:
             self._gradient += value
 
+    @property
+    def inputs(self):
+        return self._inputs
+
+    @property
+    def outputs(self):
+        return self._outputs
+
     def reset_gradient(self, to_value=None):
         self._gradient = to_value
 
@@ -62,6 +68,12 @@ class Node:
     def __init__(self, inputs=[], outputs=[]):
         self.inputs = inputs
         self.outputs = outputs
+
+        for i in self.inputs:
+            i.outputs.append(self)
+
+        for o in self.outputs:
+            o.inputs.append(self)
 
     @abstractmethod
     def forward(self):

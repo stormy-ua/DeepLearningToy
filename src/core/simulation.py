@@ -3,9 +3,10 @@ from nodes import *
 
 
 class SimulationContext:
-    nodes = []
-    adjacencyInMap = dict()
-    adjacencyOutMap = dict()
+    def __init__(self):
+        self.nodes = []
+        self.adjacencyInMap = dict()
+        self.adjacencyOutMap = dict()
 
     @property
     def outputs(self):

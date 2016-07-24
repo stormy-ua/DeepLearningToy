@@ -5,13 +5,12 @@ from losses import *
 
 
 class NeuralNetwork:
-    _layers = []
-
     @property
     def output(self):
         return self._layers[-1]
 
     def __init__(self, n0, *n):
+        self._layers = []
         if len(n) == 0:
             raise Exception("Network must have at least one layer")
 

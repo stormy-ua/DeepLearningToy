@@ -7,9 +7,9 @@ from asserts import *
 
 class SumNodesTests(unittest.TestCase):
     def testForward(self):
-        in1 = Connection(np.array([0., 1., 2.]))
-        in2 = Connection(np.array([3., 4., 5.]))
-        out = Connection()
+        in1 = Connection(np.array([0., 1., 2.]), name="x")
+        in2 = Connection(np.array([3., 4., 5.]), name="y")
+        out = Connection(name="sum")
         sum = SumNode(in1, in2, out)
         sum.forward()
         assert_array_equal(out.value, np.array([3., 5., 7.]))
