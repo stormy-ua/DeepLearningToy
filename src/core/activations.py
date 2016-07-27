@@ -1,6 +1,5 @@
-from simulation import *
+from computational_graph import *
 
 
-def relu(ctx: SimulationContext, x: Connection, name=""):
-    relu1 = ctx.max(x, ctx.constant(0))
-    return relu1
+def relu(cg: ComputationalGraph, x: Connection, name=""):
+    return cg.max(x, cg.constant(0))

@@ -6,22 +6,24 @@ from asserts import *
 from simulation import *
 from activations import *
 
+
 class ReLuTests(unittest.TestCase):
-    def testForwardScalar(self):
-        ctx = SimulationContext()
-        relu1 = relu(ctx, ctx.variable(np.array([1., -1., 0.])))
-        ctx.forward()
+    def test_forward_scalar(self):
+        cg = ComputationalGraph()
+        in1 = cg.variable()
+        relu1 = relu(cg, in1)
+        SimulationContext().forward(cg, {in1: np.array([1., -1., 0.])})
         assert_array_equal(relu1.value, np.array([1., 0., 0]))
 
-    def testBackwardScalar(self):
+    def test_backward_scalar(self):
+        cg = ComputationalGraph()
+        in1 = cg.variable()
+        relu1 = relu(cg, in1)
         ctx = SimulationContext()
-        in1 = ctx.variable(np.array([1., -1., 0.]))
-        relu1 = relu(ctx, in1)
-        ctx.forward()
-        ctx.backward()
-        numerical_gradient = [
-            numericalGradient(ctx, in1, relu1, np.array([1., 0., 0.]))[0],
-            numericalGradient(ctx, in1, relu1, np.array([0., 1., 0.]))[1],
-            numericalGradient(ctx, in1, relu1, np.array([0., 0., 1.]))[2]
+        ctx.forward_backward(cg, {in1: np.array([1., -1., 0.])})
+        grad = [
+            numerical_gradient(lambda : ctx.forward_backward(cg), in1, relu1, np.array([1., 0., 0.]))[0],
+            numerical_gradient(lambda : ctx.forward_backward(cg), in1, relu1, np.array([0., 1., 0.]))[1],
+            numerical_gradient(lambda : ctx.forward_backward(cg), in1, relu1, np.array([0., 0., 1.]))[2]
         ]
-        assert_array_almost_equal(in1.gradient, numerical_gradient)
+        assert_array_almost_equal(in1.gradient, grad)
