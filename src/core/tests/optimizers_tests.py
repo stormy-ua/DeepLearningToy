@@ -24,12 +24,21 @@ class SgdOptimizerTest(unittest.TestCase):
         (X, y, one_hot_y) = self.load_mnist_data()
         network = NeuralNetwork(X.shape[1], 64, 10)
 
-        for epoch in range(0, 500):
-            sgd(network, X, one_hot_y, learning_rate=0.05)
+        ctx = SimulationContext()
 
-        network.one_hot_y_in.value = one_hot_y
-        y_pred = np.argmax(network.predict(X), axis=0)
+        for w in network.weights:
+            ctx[w] = ConnectionData(0.01 * np.random.randn(*w.shape))
+
+        for b in network.biases:
+            ctx[b] = ConnectionData(0.01 * np.ones(b.shape))
+
+        sgd = SgdOptimizer(network.network_cg, network.cost_cg)
+        for epoch in range(0, 500):
+            sgd.minimize(ctx, network.x_in, network.one_hot_y_in, X, one_hot_y, learning_rate=0.05)
+
+        y_pred = np.argmax(network.predict(ctx, X), axis=0)
         accuracy = np.sum(y_pred == y) / len(y)
+
         self.assertAlmostEqual(accuracy, 1)
 
     def test_overfit2(self):

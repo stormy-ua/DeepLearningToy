@@ -32,10 +32,8 @@ class NeuralNetwork:
 
     def add_layer(self, inputs_count, outputs_count, input: Connection):
         index = len(self._layers) + 1
-        W = 0.01 * np.random.randn(outputs_count, inputs_count)
-        b = 0.01 * np.ones(outputs_count)
-        w_in = self.network_cg.variable(W, "W{}".format(index))
-        b_in = self.network_cg.variable(b, "b{}".format(index))
+        w_in = self.network_cg.variable("W{}".format(index), shape=(outputs_count, inputs_count))
+        b_in = self.network_cg.variable("b{}".format(index), shape=outputs_count)
         layer_output = relu(self.network_cg,
                             self.network_cg.sum(self.network_cg.matrix_multiply(w_in, input),
                                                 self.network_cg.broadcast(b_in, axis=1)),
@@ -46,9 +44,6 @@ class NeuralNetwork:
 
         return layer_output
 
-    def forward_backward(self, params=dict()):
-        self.ctx.forward_backward(params)
-
-    def predict(self, X):
-        SimulationContext().forward(self.network_cg, {self.x_in: X.T})
-        return self.output.value
+    def predict(self,ctx: SimulationContext, X):
+        ctx.forward(self.network_cg, {self.x_in: X.T})
+        return ctx[self.output].value

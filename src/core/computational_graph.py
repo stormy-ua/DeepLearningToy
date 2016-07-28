@@ -26,8 +26,8 @@ class ComputationalGraph:
         self.adjacencyInMap[connection] = operation
 
     @staticmethod
-    def variable(value=None, name=""):
-        return Variable(value, name=name)
+    def variable(name="", shape=None):
+        return Variable(name=name, shape=shape)
 
     @staticmethod
     def constant(value=None, name=""):
@@ -41,8 +41,8 @@ class ComputationalGraph:
         self.adjacencyOutMap[out] = operation
         return out
 
-    def add_binary_op(self, op, in1: Connection, in2: Connection):
-        out = Connection()
+    def add_binary_op(self, op, in1: Connection, in2: Connection, name=""):
+        out = Connection(name=name)
         operation = op(in1, in2, out)
         self.nodes.append(operation)
         self.add_input_connection(in1, operation)
@@ -59,8 +59,8 @@ class ComputationalGraph:
     def matrix_multiply(self, in1: Connection, in2: Connection):
         return self.add_binary_op(MatrixMultiplyNode, in1, in2)
 
-    def div(self, in1: Connection, in2: Connection):
-        return self.add_binary_op(DivNode, in1, in2)
+    def div(self, in1: Connection, in2: Connection, name=""):
+        return self.add_binary_op(DivNode, in1, in2, name=name)
 
     def exp(self, in1: Connection):
         return self.add_unary_op(ExpNode, in1)

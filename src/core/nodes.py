@@ -47,13 +47,26 @@ class ConnectionData:
 
 
 class Variable(Connection):
-    def __init__(self, value=None, gradient=None, name=""):
-        super().__init__(value, gradient, name)
+    @property
+    def shape(self):
+        return self._shape
+
+    def __init__(self, name="", shape=None):
+        super().__init__(name)
+        self._shape = shape
 
 
 class Constant(Connection):
-    def __init__(self, value=None, gradient=None, name=""):
-        super().__init__(value, gradient, name)
+    @property
+    def value(self):
+        return self._value
+
+    def __init__(self, value=None, name=""):
+        super().__init__(name)
+        self._value = value
+
+    def __str__(self):
+        return 'constant={}'.format(self._value)
 
 
 class Node:
@@ -64,15 +77,15 @@ class Node:
         self.outputs = outputs
 
     @abstractmethod
-    def forward(self, dataBag):
-        [dataBag[i].reset_gradient() for i in self.inputs]
+    def forward(self, data_bag):
+        [data_bag[i].reset_gradient() for i in self.inputs]
 
     @abstractmethod
-    def backward(self, dataBag): pass
+    def backward(self, data_bag): pass
 
-    def forward_backward(self, dataBag):
-        self.forward(dataBag)
-        self.backward(dataBag)
+    def forward_backward(self, data_bag):
+        self.forward(data_bag)
+        self.backward(data_bag)
 
 
 class SumNode(Node):
@@ -82,13 +95,13 @@ class SumNode(Node):
         self.in2 = in2
         self.out = out
 
-    def forward(self, dataBag):
-        super().forward(dataBag)
-        dataBag[self.out].value = dataBag[self.in1].value + dataBag[self.in2].value
+    def forward(self, data_bag):
+        super().forward(data_bag)
+        data_bag[self.out].value = data_bag[self.in1].value + data_bag[self.in2].value
 
-    def backward(self, dataBag):
-        dataBag[self.in1].gradient = dataBag[self.out].gradient
-        dataBag[self.in2].gradient = dataBag[self.out].gradient
+    def backward(self, data_bag):
+        data_bag[self.in1].gradient = data_bag[self.out].gradient
+        data_bag[self.in2].gradient = data_bag[self.out].gradient
 
 
 class MultiplyNode(Node):
@@ -98,13 +111,13 @@ class MultiplyNode(Node):
         self.in2 = in2
         self.out = out
 
-    def forward(self, dataBag):
-        super().forward(dataBag)
-        dataBag[self.out].value = dataBag[self.in1].value * dataBag[self.in2].value
+    def forward(self, data_bag):
+        super().forward(data_bag)
+        data_bag[self.out].value = data_bag[self.in1].value * data_bag[self.in2].value
 
-    def backward(self, dataBag):
-        dataBag[self.in1].gradient = dataBag[self.in2].value * dataBag[self.out].gradient
-        dataBag[self.in2].gradient = dataBag[self.in1].value * dataBag[self.out].gradient
+    def backward(self, data_bag):
+        data_bag[self.in1].gradient = data_bag[self.in2].value * data_bag[self.out].gradient
+        data_bag[self.in2].gradient = data_bag[self.in1].value * data_bag[self.out].gradient
 
 
 class DivNode(Node):
@@ -114,13 +127,13 @@ class DivNode(Node):
         self.in2 = in2
         self.out = out
 
-    def forward(self, dataBag):
-        super().forward(dataBag)
-        dataBag[self.out].value = dataBag[self.in1].value / dataBag[self.in2].value
+    def forward(self, data_bag):
+        super().forward(data_bag)
+        data_bag[self.out].value = data_bag[self.in1].value / data_bag[self.in2].value
 
-    def backward(self, dataBag):
-        dataBag[self.in1].gradient = (1 / dataBag[self.in2].value) * dataBag[self.out].gradient
-        dataBag[self.in2].gradient = dataBag[self.in1].value * (-1 / dataBag[self.in2].value ** 2) * dataBag[self.out].gradient
+    def backward(self, data_bag):
+        data_bag[self.in1].gradient = (1 / data_bag[self.in2].value) * data_bag[self.out].gradient
+        data_bag[self.in2].gradient = data_bag[self.in1].value * (-1 / data_bag[self.in2].value ** 2) * data_bag[self.out].gradient
 
 
 class ExpNode(Node):
@@ -129,12 +142,12 @@ class ExpNode(Node):
         self.in1 = in1
         self.out = out
 
-    def forward(self, dataBag):
-        super().forward(dataBag)
-        dataBag[self.out].value = np.exp(dataBag[self.in1].value)
+    def forward(self, data_bag):
+        super().forward(data_bag)
+        data_bag[self.out].value = np.exp(data_bag[self.in1].value)
 
-    def backward(self, dataBag):
-        dataBag[self.in1].gradient = np.exp(dataBag[self.in1].value) * dataBag[self.out].gradient
+    def backward(self, data_bag):
+        data_bag[self.in1].gradient = np.exp(data_bag[self.in1].value) * data_bag[self.out].gradient
 
 
 class LogNode(Node):
@@ -143,12 +156,12 @@ class LogNode(Node):
         self.in1 = in1
         self.out = out
 
-    def forward(self, dataBag):
-        super().forward(dataBag)
-        dataBag[self.out].value = np.log(dataBag[self.in1].value)
+    def forward(self, data_bag):
+        super().forward(data_bag)
+        data_bag[self.out].value = np.log(data_bag[self.in1].value)
 
-    def backward(self, dataBag):
-        dataBag[self.in1].gradient = (1 / dataBag[self.in1].value) * dataBag[self.out].gradient
+    def backward(self, data_bag):
+        data_bag[self.in1].gradient = (1 / data_bag[self.in1].value) * data_bag[self.out].gradient
 
 
 class ReduceSumNode(Node):
@@ -158,12 +171,12 @@ class ReduceSumNode(Node):
         self.out = out
         self.axis = axis
 
-    def forward(self, dataBag):
-        super().forward(dataBag)
-        dataBag[self.out].value = np.sum(dataBag[self.in1].value, self.axis)
+    def forward(self, data_bag):
+        super().forward(data_bag)
+        data_bag[self.out].value = np.sum(data_bag[self.in1].value, self.axis)
 
-    def backward(self, dataBag):
-        dataBag[self.in1].gradient = np.ones(shape=dataBag[self.in1].value.shape) * dataBag[self.out].gradient
+    def backward(self, data_bag):
+        data_bag[self.in1].gradient = np.ones(shape=data_bag[self.in1].value.shape) * data_bag[self.out].gradient
 
 
 class BroadcastNode(Node):
@@ -190,13 +203,13 @@ class MatrixMultiplyNode(Node):
         self.in2 = in2
         self.out = out
 
-    def forward(self, dataBag):
-        super().forward(dataBag)
-        dataBag[self.out].value = dataBag[self.in1].value.dot(dataBag[self.in2].value)
+    def forward(self, data_bag):
+        super().forward(data_bag)
+        data_bag[self.out].value = data_bag[self.in1].value.dot(data_bag[self.in2].value)
 
-    def backward(self, dataBag):
-        dataBag[self.in1].gradient = dataBag[self.out].gradient.dot(dataBag[self.in2].value.T)
-        dataBag[self.in2].gradient = dataBag[self.in1].value.T.dot(dataBag[self.out].gradient)
+    def backward(self, data_bag):
+        data_bag[self.in1].gradient = data_bag[self.out].gradient.dot(data_bag[self.in2].value.T)
+        data_bag[self.in2].gradient = data_bag[self.in1].value.T.dot(data_bag[self.out].gradient)
 
 
 class MaxNode(Node):
@@ -206,10 +219,10 @@ class MaxNode(Node):
         self.in2 = in2
         self.out = out
 
-    def forward(self, dataBag):
-        super().forward(dataBag)
-        dataBag[self.out].value = np.maximum(dataBag[self.in1].value, dataBag[self.in2].value)
+    def forward(self, data_bag):
+        super().forward(data_bag)
+        data_bag[self.out].value = np.maximum(data_bag[self.in1].value, data_bag[self.in2].value)
 
-    def backward(self, dataBag):
-        dataBag[self.in1].gradient = np.array(dataBag[self.in1].value > dataBag[self.in2].value, dtype=np.float32) * dataBag[self.out].gradient
-        dataBag[self.in2].gradient = np.array(dataBag[self.in2].value > dataBag[self.in1].value, dtype=np.float32) * dataBag[self.out].gradient
+    def backward(self, data_bag):
+        data_bag[self.in1].gradient = np.array(data_bag[self.in1].value > data_bag[self.in2].value, dtype=np.float32) * data_bag[self.out].gradient
+        data_bag[self.in2].gradient = np.array(data_bag[self.in2].value > data_bag[self.in1].value, dtype=np.float32) * data_bag[self.out].gradient

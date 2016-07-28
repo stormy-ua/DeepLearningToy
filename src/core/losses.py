@@ -10,5 +10,5 @@ def softmax(cg: ComputationalGraph, x: Connection, one_hot_y: Connection, sample
     log1 = cg.log(div1)
     mul2 = cg.multiply(log1, cg.constant(-1))
     reduce_sum3 = cg.reduce_sum(mul2)
-    div2 = cg.div(reduce_sum3, cg.constant(samples_count))
+    div2 = cg.div(reduce_sum3, cg.constant(samples_count), name=name)
     return div2
