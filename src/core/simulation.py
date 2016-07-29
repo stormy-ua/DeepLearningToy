@@ -11,7 +11,7 @@ class SimulationContext:
 
     def get_data(self, key):
         if key not in self.data_bag:
-            self.data_bag[key] = ConnectionData()
+            self.data_bag[key] = ConnectionData(value=key.init_value)
             if isinstance(key, Constant):
                 self.data_bag[key].value = key.value
 

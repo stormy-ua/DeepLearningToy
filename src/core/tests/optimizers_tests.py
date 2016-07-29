@@ -22,21 +22,31 @@ class SgdOptimizerTest(unittest.TestCase):
 
     def test_overfit(self):
         (X, y, one_hot_y) = self.load_mnist_data()
-        network = NeuralNetwork(X.shape[1], 64, 10)
+
+        cg = ComputationalGraph()
+        x_in = cg.constant(name="X.T")
+        nn_output = neural_network(cg, x_in, X.shape[1], 64, 10)
+        nn_output.name = "nn_output"
+
+        y_train = cg.constant(name="one_hot_y")
+        loss = softmax(cg, nn_output, y_train, X.shape[1], "loss_softmax")
 
         ctx = SimulationContext()
 
-        for w in network.weights:
-            ctx[w] = ConnectionData(0.01 * np.random.randn(*w.shape))
-
-        for b in network.biases:
-            ctx[b] = ConnectionData(0.01 * np.ones(b.shape))
-
-        sgd = SgdOptimizer(network.network_cg, network.cost_cg)
+        sgd = SgdOptimizer(learning_rate=0.05)
+        batch_size=256
         for epoch in range(0, 500):
-            sgd.minimize(ctx, network.x_in, network.one_hot_y_in, X, one_hot_y, learning_rate=0.05)
+            indexes = np.arange(0, len(X))
+            np.random.shuffle(indexes)
+            train_x = X[indexes]
+            train_y = one_hot_y[:, indexes]
+            for batch in range(0, len(train_x), batch_size):
+                batch_x = train_x[batch:batch + batch_size]
+                batch_y = train_y[:, batch:batch + batch_size]
+                sgd.minimize(ctx, cg, {x_in: batch_x.T, y_train: batch_y})
 
-        y_pred = np.argmax(network.predict(ctx, X), axis=0)
+        ctx.forward(cg, {x_in: X.T, y_train: 1})
+        y_pred = np.argmax(ctx[nn_output].value, axis=0)
         accuracy = np.sum(y_pred == y) / len(y)
 
         self.assertAlmostEqual(accuracy, 1)
@@ -52,13 +62,30 @@ class SgdOptimizerTest(unittest.TestCase):
         X = (X - mean) / std
         one_hot_y = np.array(LabelBinarizer().fit_transform(y).T)
 
-        network = NeuralNetwork(X.shape[1], 64, 3)
+        cg = ComputationalGraph()
+        x_in = cg.constant(name="X.T")
+        nn_output = neural_network(cg, x_in, X.shape[1], 64, 3)
+        nn_output.name = "nn_output"
 
+        y_train = cg.constant(name="one_hot_y")
+        loss = softmax(cg, nn_output, y_train, X.shape[1], "loss_softmax")
+
+        ctx = SimulationContext()
+        sgd = SgdOptimizer(learning_rate=0.01)
+        batch_size=256
         for epoch in range(0, 300):
-            sgd(network, X, one_hot_y, learning_rate=0.01)
+            indexes = np.arange(0, len(X))
+            np.random.shuffle(indexes)
+            train_x = X[indexes]
+            train_y = one_hot_y[:, indexes]
+            for batch in range(0, len(train_x), batch_size):
+                batch_x = train_x[batch:batch + batch_size]
+                batch_y = train_y[:, batch:batch + batch_size]
+                sgd.minimize(ctx, cg, {x_in: batch_x.T, y_train: batch_y})
 
-        network.one_hot_y_in.value = one_hot_y
-        y_pred = np.argmax(network.predict(X), axis=0)
+        ctx.forward(cg, {x_in: X.T, y_train: 1})
+        y_pred = np.argmax(ctx[nn_output].value, axis=0)
+        accuracy = np.sum(y_pred == y) / len(y)
 
         accuracy = np.sum(y_pred == y) / len(y)
         self.assertGreater(accuracy, 0.79)

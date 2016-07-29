@@ -26,8 +26,8 @@ class ComputationalGraph:
         self.adjacencyInMap[connection] = operation
 
     @staticmethod
-    def variable(name="", shape=None):
-        return Variable(name=name, shape=shape)
+    def variable(name="", init_value=None, shape=None):
+        return Variable(name=name, init_value=init_value, shape=shape)
 
     @staticmethod
     def constant(value=None, name=""):

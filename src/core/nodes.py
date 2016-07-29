@@ -3,8 +3,9 @@ from abc import ABCMeta, abstractmethod
 
 
 class Connection:
-    def __init__(self, name=""):
+    def __init__(self, name="", init_value=None):
         self._name = name
+        self._init_value = init_value
 
     @property
     def name(self):
@@ -13,6 +14,10 @@ class Connection:
     @name.setter
     def name(self, value):
         self._name = value
+
+    @property
+    def init_value(self):
+        return self._init_value
 
     def __str__(self):
         return self._name
@@ -47,12 +52,8 @@ class ConnectionData:
 
 
 class Variable(Connection):
-    @property
-    def shape(self):
-        return self._shape
-
-    def __init__(self, name="", shape=None):
-        super().__init__(name)
+    def __init__(self, name="", init_value=None, shape=None):
+        super().__init__(name, init_value)
         self._shape = shape
 
 
@@ -133,7 +134,8 @@ class DivNode(Node):
 
     def backward(self, data_bag):
         data_bag[self.in1].gradient = (1 / data_bag[self.in2].value) * data_bag[self.out].gradient
-        data_bag[self.in2].gradient = data_bag[self.in1].value * (-1 / data_bag[self.in2].value ** 2) * data_bag[self.out].gradient
+        data_bag[self.in2].gradient = data_bag[self.in1].value * (-1 / data_bag[self.in2].value ** 2) * data_bag[
+            self.out].gradient
 
 
 class ExpNode(Node):
@@ -224,5 +226,7 @@ class MaxNode(Node):
         data_bag[self.out].value = np.maximum(data_bag[self.in1].value, data_bag[self.in2].value)
 
     def backward(self, data_bag):
-        data_bag[self.in1].gradient = np.array(data_bag[self.in1].value > data_bag[self.in2].value, dtype=np.float32) * data_bag[self.out].gradient
-        data_bag[self.in2].gradient = np.array(data_bag[self.in2].value > data_bag[self.in1].value, dtype=np.float32) * data_bag[self.out].gradient
+        data_bag[self.in1].gradient = np.array(data_bag[self.in1].value > data_bag[self.in2].value, dtype=np.float32) * \
+                                      data_bag[self.out].gradient
+        data_bag[self.in2].gradient = np.array(data_bag[self.in2].value > data_bag[self.in1].value, dtype=np.float32) * \
+                                      data_bag[self.out].gradient
