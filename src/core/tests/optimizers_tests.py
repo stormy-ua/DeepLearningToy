@@ -34,7 +34,7 @@ class SgdOptimizerTest(unittest.TestCase):
         ctx = SimulationContext()
 
         sgd = MomentumSgdOptimizer(learning_rate=0.01)
-        batch_size=256
+        batch_size=512
         for epoch in range(0, 500):
             indexes = np.arange(0, len(X))
             np.random.shuffle(indexes)

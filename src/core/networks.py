@@ -2,6 +2,7 @@ from simulation import *
 import numpy as np
 from activations import *
 from losses import *
+import math
 from computational_graph import *
 
 
@@ -10,8 +11,9 @@ def neural_network(cg: ComputationalGraph, x_in: Connection, n0, *n):
 
     def add_layer(inputs_count, outputs_count, input: Connection):
         index = len(_layers) + 1
-        w_in = cg.variable("W{}".format(index), 0.01 * np.random.randn(outputs_count, inputs_count))
-        b_in = cg.variable("b{}".format(index), 0.01 * np.ones(outputs_count))
+        norm = math.sqrt(2./(outputs_count * inputs_count))
+        w_in = cg.variable("W{}".format(index), np.random.randn(outputs_count, inputs_count) * norm)
+        b_in = cg.variable("b{}".format(index), np.ones(outputs_count) * norm)
         layer_output = relu(cg, cg.sum(cg.matrix_multiply(w_in, input), cg.broadcast(b_in, axis=1)),
                             "layer{}_output".format(index))
         _layers.append(layer_output)
