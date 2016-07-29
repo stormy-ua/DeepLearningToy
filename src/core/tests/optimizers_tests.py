@@ -33,7 +33,7 @@ class SgdOptimizerTest(unittest.TestCase):
 
         ctx = SimulationContext()
 
-        sgd = SgdOptimizer(learning_rate=0.05)
+        sgd = MomentumSgdOptimizer(learning_rate=0.01)
         batch_size=256
         for epoch in range(0, 500):
             indexes = np.arange(0, len(X))
