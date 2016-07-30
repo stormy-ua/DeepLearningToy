@@ -15,7 +15,7 @@ There are several core ideas used by the framework: [computational graph](http:/
 from computational_graph import *
 
 cg = ComputationalGraph()
-sum = cg.sum(cg.constant(1), cg.constant(2))
+sum_result = cg.sum(cg.constant(1), cg.constant(2))
 ```
 The code listed above build the computational graph, but doesn't execute it. In order to execute the graph the [SimulationContext](../master/src/core/simulation.py) class should be used. The simulation context has the logic for doing forward/backward propagation. In addition, it stores all computation results produced by each and every operation, including gradients obtained during the backward phase. The code executing the computational graph described above:
 
@@ -24,12 +24,12 @@ from computational_graph import *
 from simulation import *
 
 cg = ComputationalGraph()
-sum = cg.sum(cg.constant(1), cg.constant(2))
+sum_result = cg.sum(cg.constant(1), cg.constant(2))
 
 ctx = SimulationContext()
 ctx.forward(cg)
 
-print("1+2={}".format(ctx[sum].value))
+print("1+2={}".format(ctx[sum_result].value))
 ```
 
 ## Loss Functions
