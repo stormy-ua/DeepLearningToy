@@ -3,7 +3,7 @@ python:
  - 3.5
 install:
  - pip install -r requirements.txt
-script: python -m unittest discover tests
+script: python -m unittest discover ./src/tests
 notifications:
  email:
   - kirill.panarin@gmail.com
