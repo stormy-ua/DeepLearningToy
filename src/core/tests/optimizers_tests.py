@@ -20,7 +20,7 @@ class SgdOptimizerTest(unittest.TestCase):
         X = (X - mean) / std
         return (X, y, one_hot_y)
 
-    def test_overfit(self):
+    def test_overfit_mnist_with_neural_network(self):
         (X, y, one_hot_y) = self.load_mnist_data()
 
         cg = ComputationalGraph()
@@ -51,9 +51,9 @@ class SgdOptimizerTest(unittest.TestCase):
 
         self.assertAlmostEqual(accuracy, 1)
 
-    def test_overfit2(self):
+    def test_overfit_iris_with_neural_network(self):
         iris = load_iris()
-        X = iris.data[:, :2]
+        X = iris.data
         y = iris.target
 
         # standardize
@@ -88,4 +88,43 @@ class SgdOptimizerTest(unittest.TestCase):
         accuracy = np.sum(y_pred == y) / len(y)
 
         accuracy = np.sum(y_pred == y) / len(y)
+        self.assertGreater(accuracy, 0.79)
+
+    def test_overfit_iris_with_svm(self):
+        iris = load_iris()
+        X = iris.data
+        y = iris.target
+
+        # standardize
+        mean = X.mean(axis=0)
+        std = X.std(axis=0)
+        X = (X - mean) / std
+        one_hot_y = np.array(LabelBinarizer().fit_transform(y).T)
+
+        cg = ComputationalGraph()
+        x_in = cg.constant(name="X.T")
+        W = cg.variable("W", 0.01 * np.random.randn(3, X.shape[1]))
+        svm_output = cg.matrix_multiply(W, x_in)
+        svm_output.name = "svm_output"
+
+        y_train = cg.constant(name="one_hot_y")
+        loss = hinge(cg, svm_output, y_train, X.shape[1], "loss_hinge")
+
+        ctx = SimulationContext()
+        sgd = SgdOptimizer(learning_rate=0.1)
+        batch_size=256
+        for epoch in range(0, 300):
+            indexes = np.arange(0, len(X))
+            np.random.shuffle(indexes)
+            train_x = X[indexes]
+            train_y = one_hot_y[:, indexes]
+            for batch in range(0, len(train_x), batch_size):
+                batch_x = train_x[batch:batch + batch_size]
+                batch_y = train_y[:, batch:batch + batch_size]
+                sgd.minimize(ctx, cg, {x_in: batch_x.T, y_train: batch_y})
+
+        ctx.forward(cg, {x_in: X.T, y_train: 1})
+        y_pred = np.argmax(ctx[svm_output].value, axis=0)
+        accuracy = np.sum(y_pred == y) / len(y)
+
         self.assertGreater(accuracy, 0.79)

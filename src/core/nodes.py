@@ -58,16 +58,11 @@ class Variable(Connection):
 
 
 class Constant(Connection):
-    @property
-    def value(self):
-        return self._value
-
-    def __init__(self, value=None, name=""):
-        super().__init__(name)
-        self._value = value
+    def __init__(self, init_value=None, name=""):
+        super().__init__(name, init_value)
 
     def __str__(self):
-        return 'constant={}'.format(self._value)
+        return 'constant={}'.format(self._init_value)
 
 
 class Node:

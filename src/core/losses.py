@@ -12,3 +12,13 @@ def softmax(cg: ComputationalGraph, x: Connection, one_hot_y: Connection, sample
     reduce_sum3 = cg.reduce_sum(mul2)
     div2 = cg.div(reduce_sum3, cg.constant(samples_count), name=name)
     return div2
+
+def hinge(cg: ComputationalGraph, x: Connection, one_hot_y: Connection, samples_count=1, name=""):
+    f2 = cg.multiply(x, one_hot_y)
+    f3 = cg.reduce_sum(f2, axis=0)
+    f4 = cg.sum(cg.constant(1), cg.sum(x, cg.multiply(cg.constant(-1), f3)))
+    f5 = cg.multiply(f4, cg.sum(cg.constant(1), cg.multiply(cg.constant(-1), one_hot_y)))
+    f6 = cg.max(f5, cg.constant(0))
+    f7 = cg.reduce_sum(f6)
+    f8 = cg.div(f7, cg.constant(samples_count))
+    return f8
