@@ -17,7 +17,7 @@ from computational_graph import *
 cg = ComputationalGraph()
 sum_result = cg.sum(cg.constant(1), cg.constant(2))
 ```
-The code listed above build the computational graph, but doesn't execute it. In order to execute the graph the [SimulationContext](../master/src/core/simulation.py) class should be used. The simulation context has the logic for doing forward/backward propagation. In addition, it stores all computation results produced by each and every operation, including gradients obtained during the backward phase. The code executing the computational graph described above:
+The code listed above builds the computational graph, but doesn't execute it. In order to execute the graph the [SimulationContext](../master/src/core/simulation.py) class should be used. The simulation context has the logic for doing forward/backward propagation. In addition, it stores all computation results produced by each and every operation, including gradients obtained during the backward phase. The code executing the computational graph described above:
 
 ```python
 from computational_graph import *
