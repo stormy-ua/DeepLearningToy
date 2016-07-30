@@ -17,7 +17,7 @@ from computational_graph import *
 cg = ComputationalGraph()
 sum_result = cg.sum(cg.constant(1), cg.constant(2))
 ```
-The code listed above build the computational graph, but doesn't execute it. In order to execute the graph the [SimulationContext](../master/src/core/simulation.py) class should be used. The simulation context has the logic for doing forward/backward propagation. In addition, it stores all computation results produced by each and every operation, including gradients obtained during the backward phase. The code executing the computational graph described above:
+The code listed above builds the computational graph, but doesn't execute it. In order to execute the graph the [SimulationContext](../master/src/core/simulation.py) class should be used. The simulation context has the logic for doing forward/backward propagation. In addition, it stores all computation results produced by each and every operation, including gradients obtained during the backward phase. The code executing the computational graph described above:
 
 ```python
 from computational_graph import *
@@ -31,6 +31,10 @@ ctx.forward(cg)
 
 print("1+2={}".format(ctx[sum_result].value))
 ```
+## Activation Functions
+[Activation functions](https://en.wikipedia.org/wiki/Activation_function) are used for thresholding a single neuron output. First, a neuron calculates its output based on the weighted sum of its inputs. Second, the calculated weighted sum is fed into the activation function. Finally, the activation function produces the final neuron output. Usually, an activation function ouput is normalized to be in between 0 and 1, or -1 and 1. The list of implemented activation functions:
+
+* [Relu](..master/serc/core/activations.py)
 
 ## Loss Functions
 Loss functions are used as a mesure of the model performance. Usually, it is just a scalar value telling how well a model estimates output based on the input. Needless to say, a universal loss function which fits all model flavours doesn't exists. The following loss functions are implemented in the [losses](../master/src/core/losses.py) module:
@@ -42,7 +46,7 @@ Loss functions are used as a mesure of the model performance. Usually, it is jus
 
 > The set of primitive building blocks provided by the framework could be used to build robust estimators. The benefit of using the framework is that you do not have to implement forward/backward propagation from scratch for every kind of an estimator.
 
-* Support Vector Machine
-  * [Iris dataset](../master/src/core/examples/iris_svm_classification.ipynb)
-* Multilayer Perceptron
-  * [Iris dataset](../master/src/core/examples/iris_2_layer_neural_network_classification.ipynb)
+| | Iris | MNIST | CIFAR-10
+--- | --- | --- | ---
+| Support Vector Machine (SVM)| [Example](../master/src/examples/iris_svm_classification.ipynb) | |
+| Multilayer Perceptron (2 layers)| [Example](../master/src/examples/iris_2_layer_neural_network_classification.ipynb) | |
