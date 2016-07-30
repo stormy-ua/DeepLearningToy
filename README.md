@@ -1,4 +1,7 @@
 # Deep Learning Toy
+
+![alt text](../master/logo.jpg)
+
 > Lightweight deep learning library implemented in Python. Designed for studying how contemporary deep learning libraries are implemented.
 
 ## Architecture
