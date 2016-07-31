@@ -36,7 +36,7 @@ print("1+2={}".format(ctx[sum_result].value))
 ## Activation Functions
 [Activation functions](https://en.wikipedia.org/wiki/Activation_function) are used for thresholding a single neuron output. First, a neuron calculates its output based on the weighted sum of its inputs. Second, the calculated weighted sum is fed into the activation function. Finally, the activation function produces the final neuron output. Usually, an activation function ouput is normalized to be in between 0 and 1, or -1 and 1. The list of implemented activation functions:
 
-* [Relu](..master/serc/pydeeptoy/activations.py)
+* [Relu](..master/src/pydeeptoy/activations.py)
 
 ## Loss Functions
 Loss functions are used as a mesure of the model performance. Usually, it is just a scalar value telling how well a model estimates output based on the input. Needless to say, a universal loss function which fits all model flavours doesn't exists. The following loss functions are implemented in the [losses](../master/src/pydeeptoy/losses.py) module:
