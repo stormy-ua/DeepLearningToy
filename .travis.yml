@@ -1,11 +1,9 @@
 language: python
 python:
  - 3.5
- - pypy
- - pypy3
 install:
  - pip install -r requirements.txt
-script: python -m unittest discover
+script: python -m unittest discover ./src/tests
 notifications:
  email:
   - kirill.panarin@gmail.com
