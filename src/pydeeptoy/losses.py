@@ -1,4 +1,4 @@
-from computational_graph import *
+from pydeeptoy.computational_graph import *
 
 
 def softmax(cg: ComputationalGraph, x: Connection, one_hot_y: Connection, samples_count = 1, name=""):

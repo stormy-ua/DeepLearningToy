@@ -1,7 +1,4 @@
-import unittest
-from nodes import *
-import numpy as np
-from numpy.testing import *
+from pydeeptoy.nodes import *
 
 
 def numerical_gradient(forward_backward, input: ConnectionData, output: ConnectionData, mask = 1):

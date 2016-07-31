@@ -1,9 +1,6 @@
-from simulation import *
-import numpy as np
-from activations import *
-from losses import *
 import math
-from computational_graph import *
+from pydeeptoy.activations import *
+from pydeeptoy.computational_graph import *
 
 
 def neural_network(cg: ComputationalGraph, x_in: Connection, n0, *n):

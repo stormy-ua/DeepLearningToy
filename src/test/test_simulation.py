@@ -1,11 +1,8 @@
+from pydeeptoy.asserts import *
+from pydeeptoy.losses import *
+from pydeeptoy.simulation import *
 import unittest
-from nodes import *
-import numpy as np
 from numpy.testing import *
-from simulation import *
-from asserts import *
-from losses import *
-from computational_graph import *
 
 
 class SimulationTests(unittest.TestCase):

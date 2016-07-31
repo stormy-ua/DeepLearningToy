@@ -1,9 +1,11 @@
 from sklearn import datasets
-from asserts import *
-from networks import *
-from optimizers import *
+from pydeeptoy.asserts import *
+from pydeeptoy.networks import *
+from pydeeptoy.optimizers import *
 from sklearn.datasets import load_iris
 from sklearn.preprocessing import LabelBinarizer
+import unittest
+from pydeeptoy.losses import *
 
 
 class SgdOptimizerTest(unittest.TestCase):
@@ -33,7 +35,7 @@ class SgdOptimizerTest(unittest.TestCase):
 
         ctx = SimulationContext()
 
-        sgd = MomentumSgdOptimizer(learning_rate=0.01)
+        sgd = MomentumSgdOptimizer(learning_rate=0.05)
         batch_size=512
         for epoch in range(0, 500):
             indexes = np.arange(0, len(X))
@@ -71,9 +73,9 @@ class SgdOptimizerTest(unittest.TestCase):
         loss = softmax(cg, nn_output, y_train, X.shape[1], "loss_softmax")
 
         ctx = SimulationContext()
-        sgd = SgdOptimizer(learning_rate=0.01)
+        sgd = MomentumSgdOptimizer(learning_rate=0.05)
         batch_size=256
-        for epoch in range(0, 300):
+        for epoch in range(0, 800):
             indexes = np.arange(0, len(X))
             np.random.shuffle(indexes)
             train_x = X[indexes]
@@ -88,7 +90,7 @@ class SgdOptimizerTest(unittest.TestCase):
         accuracy = np.sum(y_pred == y) / len(y)
 
         accuracy = np.sum(y_pred == y) / len(y)
-        self.assertGreater(accuracy, 0.79)
+        self.assertGreater(accuracy, 0.7)
 
     def test_overfit_iris_with_svm(self):
         iris = load_iris()
@@ -111,9 +113,9 @@ class SgdOptimizerTest(unittest.TestCase):
         loss = hinge(cg, svm_output, y_train, X.shape[1], "loss_hinge")
 
         ctx = SimulationContext()
-        sgd = SgdOptimizer(learning_rate=0.1)
+        sgd = SgdOptimizer(learning_rate=0.01)
         batch_size=256
-        for epoch in range(0, 300):
+        for epoch in range(0, 500):
             indexes = np.arange(0, len(X))
             np.random.shuffle(indexes)
             train_x = X[indexes]

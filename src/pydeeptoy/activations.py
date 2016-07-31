@@ -1,4 +1,4 @@
-from computational_graph import *
+from pydeeptoy.computational_graph import *
 
 
 def relu(cg: ComputationalGraph, x: Connection, name=""):

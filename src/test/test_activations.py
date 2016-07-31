@@ -1,10 +1,10 @@
 import unittest
-from nodes import *
+from pydeeptoy.nodes import *
 import numpy as np
 from numpy.testing import *
-from asserts import *
-from simulation import *
-from activations import *
+from pydeeptoy.asserts import *
+from pydeeptoy.simulation import *
+from pydeeptoy.activations import *
 
 
 class ReLuTests(unittest.TestCase):

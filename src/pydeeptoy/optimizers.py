@@ -1,6 +1,4 @@
-import numpy as np
-from nodes import *
-from simulation import *
+from pydeeptoy.simulation import *
 
 
 class SgdOptimizer:

@@ -1,8 +1,8 @@
 import unittest
-from nodes import *
+from pydeeptoy.nodes import *
 import numpy as np
 from numpy.testing import *
-from asserts import *
+from pydeeptoy.asserts import *
 
 
 class SumNodesTests(unittest.TestCase):

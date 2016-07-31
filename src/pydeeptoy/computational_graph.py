@@ -1,4 +1,4 @@
-from nodes import *
+from pydeeptoy.nodes import *
 
 
 class ComputationalGraph:
