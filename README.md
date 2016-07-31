@@ -4,6 +4,8 @@
 
 > Lightweight deep learning library implemented in Python. Designed for studying how contemporary deep learning libraries are implemented.
 
+[![Build Status](https://travis-ci.org/stormy-ua/DeepLearningToy.svg?branch=master)](https://travis-ci.org/stormy-ua/DeepLearningToy)
+
 ## Architecture
 There are several core ideas used by the framework: [computational graph](http://colah.github.io/posts/2015-08-Backprop/), forward propagation, [loss/cost function](https://en.wikipedia.org/wiki/Loss_function), [gradient descent](https://en.wikipedia.org/wiki/Gradient_descent), and [backward propagation](http://neuralnetworksanddeeplearning.com/chap2.html).
 *Computational graph* is a graph representing ordered set of primitive algeabric operations. Forward propagation feeds an input into a computational graph and produces the output. *Loss function* is a metric measuring how well a model estimates class or value based on the input; usually, loss function produces a scalar value. *Gradient descent* is the calculus approach for a loss function minimization. It uses the simple idea that in order to minimize a function we have to follow a path directed by its variables gradients. *Backward propagation* takes a graph in the state after forward propagation had finished, and calculates gradients starting from the output towards the input; this direction from the head of the computational graph towards the tail is the result of the calculus chain rule.
