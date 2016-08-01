@@ -33,6 +33,23 @@ ctx.forward(cg)
 
 print("1+2={}".format(ctx[sum_result].value))
 ```
+
+## Atomic Operations
+A computational graph is composed from a set of operations. An operation is the minimum building block of a computational graph. In the framework an operation is represented by the abstract [Node](../master/src/pydeeptoy/nodes.py) class. All operation take an input in the form of a numpy array or a scalar value and produce either a scalar value or a numpy array. In other words, a computational graph passes a [tensor](https://en.wikipedia.org/wiki/Tensor) through itself. That is why one of the most popular deep learning framework is called [TensorFlow](https://www.tensorflow.org). The following operations are implemented in the framework:
+
+| Operation | Description
+--- | ---
+sum | Computes the sum of two tensors.
+multiply | Computes the product of two tensors.
+matrix_multiply | Computes the product of two matrices (aka 2 dimensional tensors).
+div | Divides one tensor by another.
+exp | Calculate the exponential of all elements in the input tensor. |
+log | Natural logarithm, element-wise. |
+reduce_sum | |
+max | Element-wise maximum of tensor elements. |
+broadcast | |
+
+
 ## Activation Functions
 [Activation functions](https://en.wikipedia.org/wiki/Activation_function) are used for thresholding a single neuron output. First, a neuron calculates its output based on the weighted sum of its inputs. Second, the calculated weighted sum is fed into the activation function. Finally, the activation function produces the final neuron output. Usually, an activation function ouput is normalized to be in between 0 and 1, or -1 and 1. The list of implemented activation functions:
 
@@ -52,3 +69,7 @@ Loss functions are used as a mesure of the model performance. Usually, it is jus
 --- | --- | --- | ---
 | Support Vector Machine (SVM)| [Example](../master/src/examples/iris_svm_classification.ipynb) | |
 | Multilayer Perceptron (2 layers)| [Example](../master/src/examples/iris_2_layer_neural_network_classification.ipynb) | |
+
+## License
+
+[MIT license](http://opensource.org/licenses/mit-license.php)
