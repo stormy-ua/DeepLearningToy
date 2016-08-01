@@ -35,7 +35,7 @@ print("1+2={}".format(ctx[sum_result].value))
 ```
 
 ## Atomic Operations
-A computational graph is composed from a set of operations. An operation is the minimum building block of a computational graph. In the framework an operation is represented by the abstract [Node](../master/src/pydeeptoy/nodes.py) class. All operation take an input in the form of a numpy array or a scalar value and produce either a scalar value or a numpy array. In other words, a computational graph passes a [tensor](https://en.wikipedia.org/wiki/Tensor) through itself. That is why one of the most popular deep learning framework is called [TensorFlow](https://www.tensorflow.org). The following operations are implemented in the framework:
+A computational graph is composed from a set of operations. An operation is the minimum building block of a computational graph. In the framework an operation is represented by the abstract [Node](../master/src/pydeeptoy/nodes.py) class. All operation take an input in the form of a numpy array or a scalar value and produce either a scalar value or a numpy array. In other words, a computational graph passes a [tensor](https://en.wikipedia.org/wiki/Tensor) through itself. That is why one of the most popular deep learning framework is called [TensorFlow](https://www.tensorflow.org). The following operations are implemented in the [computational_graph](../master/src/pydeeptoy/computational_graph.py) module:
 
 | Operation | Description
 --- | ---
@@ -53,7 +53,7 @@ broadcast | |
 ## Activation Functions
 [Activation functions](https://en.wikipedia.org/wiki/Activation_function) are used for thresholding a single neuron output. First, a neuron calculates its output based on the weighted sum of its inputs. Second, the calculated weighted sum is fed into the activation function. Finally, the activation function produces the final neuron output. Usually, an activation function ouput is normalized to be in between 0 and 1, or -1 and 1. The list of implemented activation functions:
 
-* [Relu](..master/src/pydeeptoy/activations.py)
+* [Relu](../master/src/pydeeptoy/activations.py)
 
 ## Loss Functions
 Loss functions are used as a mesure of the model performance. Usually, it is just a scalar value telling how well a model estimates output based on the input. Needless to say, a universal loss function which fits all model flavours doesn't exists. The following loss functions are implemented in the [losses](../master/src/pydeeptoy/losses.py) module:
