@@ -12,8 +12,8 @@ class SumNodesTests(unittest.TestCase):
         out = Connection(name="sum")
         sum = SumNode(in1, in2, out)
         data_bag = {in1: ConnectionData(value=np.array([0., 1., 2.])),
-                   in2: ConnectionData(value=np.array([3., 4., 5.])),
-                   out: ConnectionData()}
+                    in2: ConnectionData(value=np.array([3., 4., 5.])),
+                    out: ConnectionData()}
         sum.forward(data_bag)
         assert_array_equal(data_bag[out].value, np.array([3., 5., 7.]))
 
@@ -23,13 +23,15 @@ class SumNodesTests(unittest.TestCase):
         out = Connection(name="sum")
         sum = SumNode(in1, in2, out)
         data_bag = {in1: ConnectionData(value=np.array([0., 1., 2.])),
-                   in2: ConnectionData(value=np.array([3., 4., 5.])),
-                   out: ConnectionData(gradient=np.array([7., 8., 9.]))}
+                    in2: ConnectionData(value=np.array([3., 4., 5.])),
+                    out: ConnectionData(gradient=np.array([7., 8., 9.]))}
         sum.forward_backward(data_bag)
         assert_array_almost_equal(data_bag[in1].gradient,
-                                  numerical_gradient(lambda: sum.forward_backward(data_bag), data_bag[in1], data_bag[out]))
+                                  numerical_gradient(lambda: sum.forward_backward(data_bag), data_bag[in1],
+                                                     data_bag[out]))
         assert_array_almost_equal(data_bag[in2].gradient,
-                                  numerical_gradient(lambda: sum.forward_backward(data_bag), data_bag[in2], data_bag[out]))
+                                  numerical_gradient(lambda: sum.forward_backward(data_bag), data_bag[in2],
+                                                     data_bag[out]))
 
 
 class MultiplyNodesTests(unittest.TestCase):
@@ -39,8 +41,8 @@ class MultiplyNodesTests(unittest.TestCase):
         out = Connection()
         operation = MultiplyNode(in1, in2, out)
         data_bag = {in1: ConnectionData(value=np.array([0., 1., 2.])),
-                   in2: ConnectionData(value=np.array([3., 4., 5.])),
-                   out: ConnectionData()}
+                    in2: ConnectionData(value=np.array([3., 4., 5.])),
+                    out: ConnectionData()}
         operation.forward(data_bag)
         assert_array_equal(data_bag[out].value, np.array([0., 4., 10.]))
 
@@ -50,13 +52,15 @@ class MultiplyNodesTests(unittest.TestCase):
         out = Connection()
         operation = MultiplyNode(in1, in2, out)
         data_bag = {in1: ConnectionData(value=np.array([0., 1., 2.])),
-                   in2: ConnectionData(value=np.array([3., 4., 5.])),
-                   out: ConnectionData(gradient=np.array([7., 8., 9.]))}
+                    in2: ConnectionData(value=np.array([3., 4., 5.])),
+                    out: ConnectionData(gradient=np.array([7., 8., 9.]))}
         operation.forward_backward(data_bag)
         assert_array_almost_equal(data_bag[in1].gradient,
-                                  numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1], data_bag[out]))
+                                  numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1],
+                                                     data_bag[out]))
         assert_array_almost_equal(data_bag[in2].gradient,
-                                  numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in2], data_bag[out]))
+                                  numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in2],
+                                                     data_bag[out]))
 
 
 class DivideNodesTests(unittest.TestCase):
@@ -66,8 +70,8 @@ class DivideNodesTests(unittest.TestCase):
         out = Connection()
         operation = DivNode(in1, in2, out)
         data_bag = {in1: ConnectionData(value=np.array([0., 1., 5.])),
-                   in2: ConnectionData(value=np.array([3., 4., 5.])),
-                   out: ConnectionData()}
+                    in2: ConnectionData(value=np.array([3., 4., 5.])),
+                    out: ConnectionData()}
         operation.forward(data_bag)
         assert_array_equal(data_bag[out].value, np.array([0., 0.25, 1.]))
 
@@ -77,13 +81,15 @@ class DivideNodesTests(unittest.TestCase):
         out = Connection()
         operation = DivNode(in1, in2, out)
         data_bag = {in1: ConnectionData(value=np.array([0., 1., 2.])),
-                   in2: ConnectionData(value=np.array([3., 4., 5.])),
-                   out: ConnectionData(gradient=np.array([7., 8., 9.]))}
+                    in2: ConnectionData(value=np.array([3., 4., 5.])),
+                    out: ConnectionData(gradient=np.array([7., 8., 9.]))}
         operation.forward_backward(data_bag)
         assert_array_almost_equal(data_bag[in1].gradient,
-                                  numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1], data_bag[out]))
+                                  numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1],
+                                                     data_bag[out]))
         assert_array_almost_equal(data_bag[in2].gradient,
-                                  numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in2], data_bag[out]))
+                                  numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in2],
+                                                     data_bag[out]))
 
 
 class ExpNodesTests(unittest.TestCase):
@@ -92,7 +98,7 @@ class ExpNodesTests(unittest.TestCase):
         out = Connection()
         operation = ExpNode(in1, out)
         data_bag = {in1: ConnectionData(value=np.array([0., 1., 5.])),
-                   out: ConnectionData()}
+                    out: ConnectionData()}
         operation.forward(data_bag)
         assert_array_equal(data_bag[out].value, np.array([1., np.exp(1.), np.exp(5.)]))
 
@@ -100,11 +106,12 @@ class ExpNodesTests(unittest.TestCase):
         in1 = Connection()
         out = Connection()
         data_bag = {in1: ConnectionData(value=np.array([0., 1., 2.])),
-                   out: ConnectionData(gradient=np.array([7., 8., 9.]))}
+                    out: ConnectionData(gradient=np.array([7., 8., 9.]))}
         operation = ExpNode(in1, out)
         operation.forward_backward(data_bag)
         assert_array_almost_equal(data_bag[in1].gradient,
-                                  numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1], data_bag[out]))
+                                  numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1],
+                                                     data_bag[out]))
 
 
 class LogNodesTests(unittest.TestCase):
@@ -113,7 +120,7 @@ class LogNodesTests(unittest.TestCase):
         out = Connection()
         operation = LogNode(in1, out)
         data_bag = {in1: ConnectionData(value=np.array([1., 2., 5.])),
-                   out: ConnectionData()}
+                    out: ConnectionData()}
         operation.forward(data_bag)
         assert_array_equal(data_bag[out].value, np.array([0., np.log(2.), np.log(5.)]))
 
@@ -122,10 +129,11 @@ class LogNodesTests(unittest.TestCase):
         out = Connection()
         operation = LogNode(in1, out)
         data_bag = {in1: ConnectionData(value=np.array([1., 2., 5.])),
-                   out: ConnectionData(gradient=np.array([7., 8., 9.]))}
+                    out: ConnectionData(gradient=np.array([7., 8., 9.]))}
         operation.forward_backward(data_bag)
         assert_array_almost_equal(data_bag[in1].gradient,
-                                  numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1], data_bag[out]))
+                                  numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1],
+                                                     data_bag[out]))
 
 
 class ReduceSumNodesTests(unittest.TestCase):
@@ -134,7 +142,7 @@ class ReduceSumNodesTests(unittest.TestCase):
         out = Connection()
         operation = ReduceSumNode(in1, out)
         data_bag = {in1: ConnectionData(value=np.array([[1., 2., 3.], [4., 5., 6.]])),
-                   out: ConnectionData()}
+                    out: ConnectionData()}
         operation.forward(data_bag)
         self.assertEqual(data_bag[out].value, 21)
 
@@ -143,7 +151,7 @@ class ReduceSumNodesTests(unittest.TestCase):
         out = Connection()
         operation = ReduceSumNode(in1, out, axis=0)
         data_bag = {in1: ConnectionData(value=np.array([[1., 2., 3.], [4., 5., 6.]])),
-                   out: ConnectionData()}
+                    out: ConnectionData()}
         operation.forward(data_bag)
         assert_array_equal(data_bag[out].value, np.array([5., 7., 9.]))
 
@@ -152,7 +160,7 @@ class ReduceSumNodesTests(unittest.TestCase):
         out = Connection()
         operation = ReduceSumNode(in1, out, axis=1)
         data_bag = {in1: ConnectionData(value=np.array([[1., 2., 3.], [4., 5., 6.]])),
-                   out: ConnectionData()}
+                    out: ConnectionData()}
         operation.forward(data_bag)
         assert_array_equal(data_bag[out].value, np.array([6, 15]))
 
@@ -161,7 +169,7 @@ class ReduceSumNodesTests(unittest.TestCase):
         out = Connection()
         operation = ReduceSumNode(in1, out)
         data_bag = {in1: ConnectionData(value=np.array([[1., 2., 3.], [4., 5., 6.]])),
-                   out: ConnectionData(gradient=2)}
+                    out: ConnectionData(gradient=2)}
         operation.forward_backward(data_bag)
         assert_array_equal(data_bag[in1].gradient, np.ones(shape=data_bag[in1].value.shape) * data_bag[out].gradient)
 
@@ -170,7 +178,7 @@ class ReduceSumNodesTests(unittest.TestCase):
         out = Connection()
         operation = ReduceSumNode(in1, out, axis=0)
         data_bag = {in1: ConnectionData(value=np.array([[1., 2., 3.], [4., 5., 6.]])),
-                   out: ConnectionData(gradient=2)}
+                    out: ConnectionData(gradient=2)}
         operation.forward_backward(data_bag)
         assert_array_equal(data_bag[in1].gradient, np.ones(shape=data_bag[in1].value.shape) * data_bag[out].gradient)
 
@@ -179,7 +187,7 @@ class ReduceSumNodesTests(unittest.TestCase):
         out = Connection()
         operation = ReduceSumNode(in1, out, axis=1)
         data_bag = {in1: ConnectionData(value=np.array([[1., 2., 3.], [4., 5., 6.]])),
-                   out: ConnectionData(gradient=2)}
+                    out: ConnectionData(gradient=2)}
         operation.forward_backward(data_bag)
         assert_array_equal(data_bag[in1].gradient, np.ones(shape=data_bag[in1].value.shape) * data_bag[out].gradient)
 
@@ -191,8 +199,8 @@ class MatrixMultiplyNodesTests(unittest.TestCase):
         out = Connection()
         operation = MatrixMultiplyNode(in1, in2, out)
         data_bag = {in1: ConnectionData(value=np.array([[0., 1., 2.], [3., 4., 5.]])),
-                   in2: ConnectionData(value=np.array([6., 7., 8.])),
-                   out: ConnectionData()}
+                    in2: ConnectionData(value=np.array([6., 7., 8.])),
+                    out: ConnectionData()}
         operation.forward(data_bag)
         assert_array_equal(data_bag[out].value, np.array([23., 86.]))
 
@@ -202,16 +210,22 @@ class MatrixMultiplyNodesTests(unittest.TestCase):
         out = Connection()
         operation = MatrixMultiplyNode(in1, in2, out)
         data_bag = {in1: ConnectionData(value=np.array([[0., 1., 2.], [3., 4., 5.]])),
-                   in2: ConnectionData(value=np.array([6., 7., 8.])[:, np.newaxis]),
-                   out: ConnectionData(gradient=np.array([1., 1.])[:, np.newaxis])}
+                    in2: ConnectionData(value=np.array([6., 7., 8.])[:, np.newaxis]),
+                    out: ConnectionData(gradient=np.array([1., 1.])[:, np.newaxis])}
         operation.forward_backward(data_bag)
         grad = [
-            [numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1], data_bag[out], np.array([[1., 0., 0.], [0., 0., 0.]]))[0, 0],
-             numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1], data_bag[out], np.array([[0., 1., 0.], [0., 0., 0.]]))[0, 0],
-             numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1], data_bag[out], np.array([[0., 0., 1.], [0., 0., 0.]]))[0, 0]],
-            [numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1], data_bag[out], np.array([[0., 0., 0.], [1., 0., 0.]]))[1, 0],
-             numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1], data_bag[out], np.array([[0., 0., 0.], [0., 1., 0.]]))[1, 0],
-             numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1], data_bag[out], np.array([[0., 0., 0.], [0., 0., 1.]]))[1, 0]]
+            [numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1], data_bag[out],
+                                np.array([[1., 0., 0.], [0., 0., 0.]]))[0, 0],
+             numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1], data_bag[out],
+                                np.array([[0., 1., 0.], [0., 0., 0.]]))[0, 0],
+             numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1], data_bag[out],
+                                np.array([[0., 0., 1.], [0., 0., 0.]]))[0, 0]],
+            [numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1], data_bag[out],
+                                np.array([[0., 0., 0.], [1., 0., 0.]]))[1, 0],
+             numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1], data_bag[out],
+                                np.array([[0., 0., 0.], [0., 1., 0.]]))[1, 0],
+             numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1], data_bag[out],
+                                np.array([[0., 0., 0.], [0., 0., 1.]]))[1, 0]]
         ]
         assert_array_almost_equal(data_bag[in1].gradient, np.array(grad), 5)
 
@@ -223,8 +237,8 @@ class MaxNodeTests(unittest.TestCase):
         out = Connection()
         operation = MaxNode(in1, in2, out)
         data_bag = {in1: ConnectionData(value=np.array([-1., 1., 0.])),
-                   in2: ConnectionData(value=np.array([1., 0., -5.])),
-                   out: ConnectionData()}
+                    in2: ConnectionData(value=np.array([1., 0., -5.])),
+                    out: ConnectionData()}
         operation.forward(data_bag)
         assert_array_equal(data_bag[out].value, np.array([1., 1., 0.]))
 
@@ -234,13 +248,15 @@ class MaxNodeTests(unittest.TestCase):
         out = Connection()
         operation = MaxNode(in1, in2, out)
         data_bag = {in1: ConnectionData(value=np.array([-1., 1., 5.])),
-                   in2: ConnectionData(value=np.array([1., 0., -5.])),
-                   out: ConnectionData(gradient=np.array([7., 8., 9.]))}
+                    in2: ConnectionData(value=np.array([1., 0., -5.])),
+                    out: ConnectionData(gradient=np.array([7., 8., 9.]))}
         operation.forward_backward(data_bag)
         assert_array_almost_equal(data_bag[in1].gradient,
-                                  numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1], data_bag[out]))
+                                  numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in1],
+                                                     data_bag[out]))
         assert_array_almost_equal(data_bag[in2].gradient,
-                                  numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in2], data_bag[out]))
+                                  numerical_gradient(lambda: operation.forward_backward(data_bag), data_bag[in2],
+                                                     data_bag[out]))
 
 
 class BroadcastNodeTests(unittest.TestCase):
@@ -249,7 +265,7 @@ class BroadcastNodeTests(unittest.TestCase):
         out = Connection()
         operation = BroadcastNode(in1, out, axis=1)
         data_bag = {in1: ConnectionData(np.array([1., 2., 3.])),
-                   out: ConnectionData()}
+                    out: ConnectionData()}
         operation.forward(data_bag)
         assert_array_equal(data_bag[out].value, np.array([[1.], [2.], [3.]]))
 
@@ -261,3 +277,36 @@ class BroadcastNodeTests(unittest.TestCase):
                     out: ConnectionData(gradient=np.array([[1., 1., 1.], [2., 2., 2.], [3., 3., 3.]]))}
         operation.forward_backward(data_bag)
         assert_array_equal(data_bag[in1].gradient, np.array([3., 6., 9.]))
+
+
+class Tensor3dToColTests(unittest.TestCase):
+    def test_forward(self):
+        in1 = Connection()
+        out = Connection()
+        operation = Tensor3dToCol(in1, out, receptive_field_size=3, padding=0, stride=1)
+        data_bag = {in1: ConnectionData(value=np.array([[
+                        [
+                            [1, 2, 0, 2],
+                            [3, 4, 1, 2],
+                            [1, 0, 2, 0],
+                            [1, 0, 1, 1]
+                        ],
+                        [
+                            [1, -1, 2, 2],
+                            [5, 6, 1, 2],
+                            [0, 1, 1, 2],
+                            [2, 0, 0, 0]
+                        ]
+                    ]])),
+                    out: ConnectionData()}
+        operation.forward(data_bag)
+        assert_array_equal(data_bag[out].value, np.array(
+        [[
+            [1, 2, 0, 3, 4, 1, 1, 0, 2, 1, -1, 2, 5, 6, 1, 0, 1, 1],
+            [2, 0, 2, 4, 1, 2, 0, 2, 0, -1, 2, 2, 6, 1, 2, 1, 1, 2],
+            [3, 4, 1, 1, 0, 2, 1, 0, 1, 5, 6, 1, 0, 1, 1, 2, 0, 0],
+            [4, 1, 2, 0, 2, 0, 0, 1, 1, 6, 1, 2, 1, 1, 2, 0, 0, 0]
+        ]]))
+
+    def test_backward(self):
+        pass

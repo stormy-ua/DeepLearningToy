@@ -225,3 +225,48 @@ class MaxNode(Node):
                                       data_bag[self.out].gradient
         data_bag[self.in2].gradient = np.array(data_bag[self.in2].value > data_bag[self.in1].value, dtype=np.float32) * \
                                       data_bag[self.out].gradient
+
+
+class Tensor3dToCol(Node):
+    def __init__(self, in1: Connection, out: Connection, receptive_field_size, stride=1, padding=1):
+        super().__init__([in1], [out])
+        self.in1 = in1
+        self.out = out
+        self.receptive_field_size = receptive_field_size
+        self.stride = stride
+        self.padding = padding
+
+    def forward(self, data_bag):
+        super().forward(data_bag)
+        x = data_bag[self.in1].value
+        # input width
+        w = x.shape[2]
+        # input height
+        h = x.shape[3]
+        # number of samples
+        n = x.shape[0]
+        # depth
+        c = x.shape[1]
+        f = self.receptive_field_size
+        p = self.padding
+        s = self.stride
+
+        output_width = (w - f + 2*p)/s + 1
+        output_height = (h - f + 2*p)/s + 1
+
+        x_padded = np.pad(x, ((0, 0), (0, 0), (p, p), (p, p)), mode='constant')
+
+        io = np.repeat(s*np.arange(output_height, dtype=np.int32), output_height*f*f*c)
+        ko = np.tile(np.repeat(s*np.arange(output_width, dtype=np.int32), f*f*c), output_width)
+
+        i = np.tile(np.tile(np.repeat(np.arange(f, dtype=np.int32), f), c), output_height*output_width)
+        k = np.tile(np.tile(np.tile(np.arange(f, dtype=np.int32), f), output_height*output_width), c)
+
+        j = np.tile(np.repeat(np.arange(c, dtype=np.int32), f*f), output_height*c)
+
+        x_col = x_padded[:, j, i + io, k + ko].reshape(n, output_height*output_width, -1)
+
+        data_bag[self.out].value = x_col
+
+    def backward(self, data_bag):
+        pass

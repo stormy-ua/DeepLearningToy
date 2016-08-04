@@ -23,6 +23,7 @@ class SgdOptimizerTest(unittest.TestCase):
         return (X, y, one_hot_y)
 
     def test_overfit_mnist_with_neural_network(self):
+        np.random.seed(100)
         (X, y, one_hot_y) = self.load_mnist_data()
 
         cg = ComputationalGraph()
@@ -35,9 +36,9 @@ class SgdOptimizerTest(unittest.TestCase):
 
         ctx = SimulationContext()
 
-        sgd = MomentumSgdOptimizer(learning_rate=0.05)
-        batch_size=256
-        for epoch in range(0, 800):
+        sgd = MomentumSgdOptimizer(learning_rate=0.001)
+        batch_size=512
+        for epoch in range(0, 1000):
             indexes = np.arange(0, len(X))
             np.random.shuffle(indexes)
             train_x = X[indexes]
