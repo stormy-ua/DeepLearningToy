@@ -236,6 +236,28 @@ class Tensor3dToCol(Node):
         self.stride = stride
         self.padding = padding
 
+    @staticmethod
+    def get_indices(f, c, s, output_height, output_width):
+        io = np.repeat(s * np.arange(output_height, dtype=np.int32), output_height * f * f * c)
+        ko = np.tile(np.repeat(s * np.arange(output_width, dtype=np.int32), f * f * c), output_width)
+
+        i = np.tile(np.tile(np.repeat(np.arange(f, dtype=np.int32), f), c), output_height * output_width)
+        k = np.tile(np.tile(np.tile(np.arange(f, dtype=np.int32), f), output_height * output_width), c)
+
+        j = np.tile(np.repeat(np.arange(c, dtype=np.int32), f * f), output_height * c)
+
+        return slice(None), j, i + io, k + ko
+
+    @staticmethod
+    def get_output_dims(w, h, f, p, s):
+        output_width = (w - f + 2 * p) / s + 1
+        output_height = (h - f + 2 * p) / s + 1
+        return output_width, output_height
+
+    @staticmethod
+    def pad(x, p):
+        return np.pad(x, ((0, 0), (0, 0), (p, p), (p, p)), mode='constant')
+
     def forward(self, data_bag):
         super().forward(data_bag)
         x = data_bag[self.in1].value
@@ -251,22 +273,38 @@ class Tensor3dToCol(Node):
         p = self.padding
         s = self.stride
 
-        output_width = (w - f + 2*p)/s + 1
-        output_height = (h - f + 2*p)/s + 1
+        x_padded = self.pad(x, p)
 
-        x_padded = np.pad(x, ((0, 0), (0, 0), (p, p), (p, p)), mode='constant')
+        output_width, output_height = self.get_output_dims(w, h, f, p, s)
+        idx = self.get_indices(f, c, s, output_height, output_width)
 
-        io = np.repeat(s*np.arange(output_height, dtype=np.int32), output_height*f*f*c)
-        ko = np.tile(np.repeat(s*np.arange(output_width, dtype=np.int32), f*f*c), output_width)
-
-        i = np.tile(np.tile(np.repeat(np.arange(f, dtype=np.int32), f), c), output_height*output_width)
-        k = np.tile(np.tile(np.tile(np.arange(f, dtype=np.int32), f), output_height*output_width), c)
-
-        j = np.tile(np.repeat(np.arange(c, dtype=np.int32), f*f), output_height*c)
-
-        x_col = x_padded[:, j, i + io, k + ko].reshape(n, output_height*output_width, -1)
+        x_col = x_padded[idx].reshape(n, output_height * output_width, -1)
 
         data_bag[self.out].value = x_col
 
     def backward(self, data_bag):
-        pass
+        x = data_bag[self.in1].value
+        # input width
+        w = x.shape[2]
+        # input height
+        h = x.shape[3]
+        # number of samples
+        n = x.shape[0]
+        # depth
+        c = x.shape[1]
+        f = self.receptive_field_size
+        p = self.padding
+        s = self.stride
+
+        grad_in = data_bag[self.out].gradient
+
+        output_width, output_height = self.get_output_dims(w, h, f, p, s)
+        idx = self.get_indices(f, c, s, output_height, output_width)
+
+        grad = self.pad(np.zeros(shape=x.shape), p)
+        np.add.at(grad, idx, grad_in.reshape(n, -1))
+
+        if p != 0:
+            grad = grad[:, :, p:-p, p:-p]
+
+        data_bag[self.in1].gradient = grad

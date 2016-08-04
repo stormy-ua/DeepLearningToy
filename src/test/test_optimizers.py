@@ -55,6 +55,7 @@ class SgdOptimizerTest(unittest.TestCase):
         self.assertGreater(accuracy, .7)
 
     def test_overfit_iris_with_neural_network(self):
+        np.random.seed(100)
         iris = load_iris()
         X = iris.data
         y = iris.target
@@ -94,6 +95,7 @@ class SgdOptimizerTest(unittest.TestCase):
         self.assertGreater(accuracy, 0.7)
 
     def test_overfit_iris_with_svm(self):
+        np.random.seed(100)
         iris = load_iris()
         X = iris.data
         y = iris.target
