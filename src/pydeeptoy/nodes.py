@@ -227,6 +227,21 @@ class MaxNode(Node):
                                       data_bag[self.out].gradient
 
 
+class TransposeNode(Node):
+    def __init__(self, in1: Connection, out: Connection, axes):
+        super().__init__([in1], [out])
+        self.in1 = in1
+        self.out = out
+        self.axes = axes
+
+    def forward(self, data_bag):
+        super().forward(data_bag)
+        data_bag[self.out].value = np.transpose(data_bag[self.in1].value, self.axes)
+
+    def backward(self, data_bag):
+        data_bag[self.in1].gradient = np.transpose(data_bag[self.out].gradient, self.axes)
+
+
 class Tensor3dToCol(Node):
     def __init__(self, in1: Connection, out: Connection, receptive_field_size, stride=1, padding=1):
         super().__init__([in1], [out])

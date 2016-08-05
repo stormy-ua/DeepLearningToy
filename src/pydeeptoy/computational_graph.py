@@ -87,4 +87,23 @@ class ComputationalGraph:
         self.adjacencyOutMap[out] = operation
         return out
 
+    def transpose(self, in1: Connection, *axes):
+        out = Connection()
+        operation = TransposeNode(in1, out, axes)
+        self.nodes.append(operation)
+        self.add_input_connection(in1, operation)
+        self.adjacencyOutMap[out] = operation
+        return out
+
+    def tensor_3d_to_cols(self, in1: Connection, receptive_field_size, stride=1, padding=1, name=""):
+        out = Connection(name=name)
+        operation = Tensor3dToCol(in1, out, receptive_field_size, stride=stride, padding=padding)
+        self.nodes.append(operation)
+        self.add_input_connection(in1, operation)
+        self.adjacencyOutMap[out] = operation
+        return out
+
+    def convolution(self, x_in: Connection, w_in: Connection, receptive_field_size, stride=1, padding=1, name=""):
+        x_cols = self.tensor_3d_to_cols(x_in, receptive_field_size, stride=stride, padding=padding)
+        return self.matrix_multiply(x_cols, w_in)
 
