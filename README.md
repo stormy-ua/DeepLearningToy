@@ -49,6 +49,7 @@ reduce_sum | Computes the sum of elements across dimensions of a tensor. |
 max | Element-wise maximum of tensor elements. |
 broadcast | |
 transpose | Permute the dimensions of a tensor. |
+reshape | Gives a new shape to an array without changing its data. |
 conv2d | Computes a 2-D convolution given 4-D input and filter tensors. |
 
 
