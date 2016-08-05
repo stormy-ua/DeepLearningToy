@@ -4,7 +4,7 @@ from numpy.testing import *
 
 
 class ConvolutionTests(unittest.TestCase):
-    def test_convolution(self):
+    def test_conv2d(self):
         cg = ComputationalGraph()
         x = cg.constant(np.array([[
             [
@@ -34,7 +34,7 @@ class ConvolutionTests(unittest.TestCase):
             [1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, 1, 1, 1, 1, 0, -1, -1, 0, 0, 1, 1, 0, 1, -1, -1, 0]
         ]).transpose(1, 0), name="w")
 
-        conv = cg.transpose(cg.convolution(x, w, 3, stride=2, padding=1), 0, 2, 1)
+        conv = cg.transpose(cg.conv2d(x, w, 3, stride=2, padding=1), 0, 2, 1)
 
         sc = SimulationContext()
         sc.forward(cg)

@@ -103,7 +103,13 @@ class ComputationalGraph:
         self.adjacencyOutMap[out] = operation
         return out
 
-    def convolution(self, x_in: Connection, w_in: Connection, receptive_field_size, stride=1, padding=1, name=""):
+    def conv2d(self, x_in: Connection, w_in: Connection, receptive_field_size, stride=1, padding=1, name=""):
+        """
+        Computes a 2-D convolution given 4-D input and filter tensors.
+        """
         x_cols = self.tensor_3d_to_cols(x_in, receptive_field_size, stride=stride, padding=padding)
-        return self.matrix_multiply(x_cols, w_in)
+        mul = self.matrix_multiply(x_cols, w_in)
+
+        mul.name = name
+        return mul
 
