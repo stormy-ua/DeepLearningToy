@@ -45,7 +45,7 @@ matrix_multiply | Computes the product of two matrices (aka 2 dimensional tensor
 div | Divides one tensor by another.
 exp | Calculate the exponential of all elements in the input tensor. |
 log | Natural logarithm, element-wise. |
-reduce_sum | |
+reduce_sum | Computes the sum of elements across dimensions of a tensor. |
 max | Element-wise maximum of tensor elements. |
 broadcast | |
 transpose | Permute the dimensions of a tensor. |
