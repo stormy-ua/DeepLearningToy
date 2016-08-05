@@ -1,7 +1,7 @@
 from pydeeptoy.computational_graph import *
 
 
-def softmax(cg: ComputationalGraph, x: Connection, one_hot_y: Connection, samples_count = 1, name=""):
+def softmax(cg: ComputationalGraph, x: Connection, one_hot_y: Connection, samples_count=1, name=""):
     exp1 = cg.exp(x)
     reduce_sum1 = cg.reduce_sum(exp1, axis=0)
     mul1 = cg.multiply(exp1, one_hot_y)
@@ -12,6 +12,7 @@ def softmax(cg: ComputationalGraph, x: Connection, one_hot_y: Connection, sample
     reduce_sum3 = cg.reduce_sum(mul2)
     div2 = cg.div(reduce_sum3, cg.constant(samples_count), name=name)
     return div2
+
 
 def hinge(cg: ComputationalGraph, x: Connection, one_hot_y: Connection, samples_count=1, name=""):
     f2 = cg.multiply(x, one_hot_y)

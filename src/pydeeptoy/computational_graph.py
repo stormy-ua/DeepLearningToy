@@ -95,8 +95,8 @@ class ComputationalGraph:
         self.adjacencyOutMap[out] = operation
         return out
 
-    def reshape(self, in1: Connection, newaxes):
-        out = Connection()
+    def reshape(self, in1: Connection, newaxes, name=""):
+        out = Connection(name=name)
         operation = ReshapeNode(in1, out, newaxes)
         self.nodes.append(operation)
         self.add_input_connection(in1, operation)

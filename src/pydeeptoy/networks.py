@@ -17,7 +17,7 @@ def neural_network(cg: ComputationalGraph, x_in: Connection, n0, *n):
 
         return layer_output
 
-    add_layer(n0, n[0], x_in)
+    add_layer(n0, n[0], cg.transpose(x_in, 1, 0))
 
     for n1, n2 in zip(n, n[1:]):
         add_layer(n1, n2, _layers[-1])
