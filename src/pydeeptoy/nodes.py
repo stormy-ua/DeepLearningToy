@@ -242,6 +242,21 @@ class TransposeNode(Node):
         data_bag[self.in1].gradient = np.transpose(data_bag[self.out].gradient, self.axes)
 
 
+class ReshapeNode(Node):
+    def __init__(self, in1: Connection, out: Connection, newshape):
+        super().__init__([in1], [out])
+        self.in1 = in1
+        self.out = out
+        self.newshape = newshape
+
+    def forward(self, data_bag):
+        super().forward(data_bag)
+        data_bag[self.out].value = np.reshape(data_bag[self.in1].value, self.newshape)
+
+    def backward(self, data_bag):
+        data_bag[self.in1].gradient = np.reshape(data_bag[self.out].gradient, self.in1.shape)
+
+
 class Tensor3dToCol(Node):
     def __init__(self, in1: Connection, out: Connection, receptive_field_size, stride=1, padding=1):
         super().__init__([in1], [out])

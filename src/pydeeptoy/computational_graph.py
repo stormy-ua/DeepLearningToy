@@ -95,6 +95,14 @@ class ComputationalGraph:
         self.adjacencyOutMap[out] = operation
         return out
 
+    def reshape(self, in1: Connection, newaxes):
+        out = Connection()
+        operation = ReshapeNode(in1, out, newaxes)
+        self.nodes.append(operation)
+        self.add_input_connection(in1, operation)
+        self.adjacencyOutMap[out] = operation
+        return out
+
     def tensor_3d_to_cols(self, in1: Connection, receptive_field_size, stride=1, padding=1, name=""):
         out = Connection(name=name)
         operation = Tensor3dToCol(in1, out, receptive_field_size, stride=stride, padding=padding)
@@ -103,13 +111,13 @@ class ComputationalGraph:
         self.adjacencyOutMap[out] = operation
         return out
 
-    def conv2d(self, x_in: Connection, w_in: Connection, receptive_field_size, stride=1, padding=1, name=""):
+    def conv2d(self, x_in: Connection, w_in: Connection, receptive_field_size, filters_number, stride=1, padding=1, name=""):
         """
         Computes a 2-D convolution given 4-D input and filter tensors.
         """
         x_cols = self.tensor_3d_to_cols(x_in, receptive_field_size, stride=stride, padding=padding)
-        mul = self.matrix_multiply(x_cols, w_in)
+        output = self.reshape(self.transpose(self.matrix_multiply(x_cols, w_in), 0, 2, 1), (-1, filters_number, receptive_field_size, receptive_field_size))
 
-        mul.name = name
-        return mul
+        output.name = name
+        return output
 
