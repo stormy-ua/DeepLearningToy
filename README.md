@@ -48,6 +48,8 @@ log | Natural logarithm, element-wise. |
 reduce_sum | |
 max | Element-wise maximum of tensor elements. |
 broadcast | |
+transpose | | Permute the dimensions of a tensor.
+conv2d | | Computes a 2-D convolution given 4-D input and filter tensors.
 
 
 ## Activation Functions
