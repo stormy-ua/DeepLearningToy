@@ -8,7 +8,7 @@
 
 ## Architecture
 There are several core ideas used by the framework: [computational graph](http://colah.github.io/posts/2015-08-Backprop/), forward propagation, [loss/cost function](https://en.wikipedia.org/wiki/Loss_function), [gradient descent](https://en.wikipedia.org/wiki/Gradient_descent), and [backward propagation](http://neuralnetworksanddeeplearning.com/chap2.html).
-*Computational graph* is a graph representing ordered set of primitive algeabric operations. Forward propagation feeds an input into a computational graph and produces the output. *Loss function* is a metric measuring how well a model estimates class or value based on the input; usually, loss function produces a scalar value. *Gradient descent* is the calculus approach for a loss function minimization. It uses the simple idea that in order to minimize a function we have to follow a path directed by its variables gradients. *Backward propagation* takes a graph in the state after forward propagation had finished, and calculates gradients starting from the output towards the input; this direction from the head of the computational graph towards the tail is the result of the calculus chain rule.
+*Computational graph* is a graph representing ordered set of primitive algeabric operations. Forward propagation feeds an input into a computational graph and produces the output. *Loss function* is a metric measuring how well a model estimates class or a value based on the input; usually, a loss function produces a scalar value. *Gradient descent* is the calculus approach for a loss function minimization. It uses the simple idea that in order to minimize a function we have to follow a path directed by its variables gradients. *Backward propagation* takes a graph in the state after forward propagation had finished, and calculates gradients starting from the output towards the input; this direction from the head of the computational graph towards the tail is the result of the calculus chain rule.
 
 ## Computational Graph
 [ComputationalGraph](../master/src/pydeeptoy/computational_graph.py) class is equipped with methods representing primitive algeabric operations. Each method takes an input and produces an output. Inputs and outputs are represented by the [Connection](../master/src/pydeeptoy/nodes.py) class, and operations by the [Node](../master/src/pydeeptoy/nodes.py) class. There are two types of connections: constants and variables. The former do not change during the model optimization, but the latter could be changed during the optimization process. Here is the example of the primitive computational graph which adds two numbers:
@@ -45,11 +45,12 @@ matrix_multiply | Computes the product of two matrices (aka 2 dimensional tensor
 div | Divides one tensor by another.
 exp | Calculate the exponential of all elements in the input tensor. |
 log | Natural logarithm, element-wise. |
-reduce_sum | |
+reduce_sum | Computes the sum of elements across dimensions of a tensor. |
 max | Element-wise maximum of tensor elements. |
 broadcast | |
-transpose | | Permute the dimensions of a tensor.
-conv2d | | Computes a 2-D convolution given 4-D input and filter tensors.
+transpose | Permute the dimensions of a tensor. |
+reshape | Gives a new shape to an array without changing its data. |
+conv2d | Computes a 2-D convolution given 4-D input and filter tensors. |
 
 
 ## Activation Functions

@@ -34,7 +34,7 @@ class ConvolutionTests(unittest.TestCase):
             [1, -1, 1, -1, 1, -1, 1, -1, 1, -1, 1, 1, 1, 1, 1, 0, -1, -1, 0, 0, 1, 1, 0, 1, -1, -1, 0]
         ]).transpose(1, 0), name="w")
 
-        conv = cg.transpose(cg.conv2d(x, w, 3, stride=2, padding=1), 0, 2, 1)
+        conv = cg.conv2d(x, w, receptive_field_size=3, filters_number=2, stride=2, padding=1)
 
         sc = SimulationContext()
         sc.forward(cg)
@@ -42,8 +42,16 @@ class ConvolutionTests(unittest.TestCase):
         conv_value = sc.data_bag[conv].value
         assert_array_equal(conv_value, np.array(
             [[
-                [ 0, 0, 0, 2, 10, 5, 0,2, 3],
-                [-1,  0, 1, 1, 14, 3, 3, 3, 5]
+                [
+                    [0, 0, 0],
+                    [2, 10, 5],
+                    [0, 2, 3]
+                ],
+                [
+                    [-1, 0, 1],
+                    [1, 14, 3],
+                    [3, 3, 5]
+                ]
             ]]
         ))
-        self.assertEqual(conv_value.shape, (sc[x].value.shape[0], sc[w].value.shape[1], 3*3))
+        self.assertEqual(conv_value.shape, (sc[x].value.shape[0], sc[w].value.shape[1], 3, 3))
