@@ -71,7 +71,7 @@ Loss functions are used as a mesure of the model performance. Usually, it is jus
 | | Iris | MNIST | CIFAR-10
 --- | --- | --- | ---
 | Support Vector Machine (SVM)| [Example](../master/src/examples/iris_svm_classification.ipynb) | |
-| Multilayer Perceptron (2 layers)| [Example](../master/src/examples/iris_2_layer_neural_network_classification.ipynb) | [Example](../master/src/examples/MNIST-multilayer-perceptron.ipynb) |
+| Multilayer Perceptron | [Example](../master/src/examples/iris_2_layer_neural_network_classification.ipynb) | [Example](../master/src/examples/MNIST-multilayer-perceptron.ipynb) |
 
 ## License
 
