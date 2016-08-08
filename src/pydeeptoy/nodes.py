@@ -161,6 +161,21 @@ class LogNode(Node):
         data_bag[self.in1].gradient = (1 / data_bag[self.in1].value) * data_bag[self.out].gradient
 
 
+class ExpressionNode(Node):
+    def __init__(self, in1: Connection, out: Connection, expression):
+        super().__init__([in1], [out])
+        self.in1 = in1
+        self.out = out
+        self.expression = expression
+
+    def forward(self, data_bag):
+        super().forward(data_bag)
+        data_bag[self.out].value = self.expression(data_bag[self.in1].value)
+
+    def backward(self, data_bag):
+        pass
+
+
 class ReduceSumNode(Node):
     def __init__(self, in1: Connection, out: Connection, axis=None):
         super().__init__([in1], [out])

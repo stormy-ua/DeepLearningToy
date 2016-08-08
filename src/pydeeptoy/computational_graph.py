@@ -68,6 +68,17 @@ class ComputationalGraph:
     def log(self, in1: Connection):
         return self.add_unary_op(LogNode, in1)
 
+    def eval(self, in1: Connection, expression):
+        out = Connection()
+        operation = ExpressionNode(in1, out, expression)
+        self.nodes.append(operation)
+        self.add_input_connection(in1, operation)
+        self.adjacencyOutMap[out] = operation
+        return out
+
+    def shape(self, in1: Connection, axis=0):
+        return self.eval(in1, lambda x: x.shape[axis])
+
     def reduce_sum(self, in1: Connection, axis = None):
         out = Connection()
         operation = ReduceSumNode(in1, out, axis)

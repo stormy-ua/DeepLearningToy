@@ -32,13 +32,13 @@ class SgdOptimizerTest(unittest.TestCase):
         nn_output.name = "nn_output"
 
         y_train = cg.constant(name="one_hot_y")
-        loss = softmax(cg, nn_output, y_train, X.shape[1], "loss_softmax")
+        loss = softmax(cg, nn_output, y_train, "loss_softmax")
 
         ctx = SimulationContext()
 
-        sgd = MomentumSgdOptimizer(learning_rate=0.001)
+        sgd = MomentumSgdOptimizer(learning_rate=0.01)
         batch_size=512
-        for epoch in range(0, 1000):
+        for epoch in range(0, 50):
             indexes = np.arange(0, len(X))
             np.random.shuffle(indexes)
             train_x = X[indexes]
@@ -72,12 +72,12 @@ class SgdOptimizerTest(unittest.TestCase):
         nn_output.name = "nn_output"
 
         y_train = cg.constant(name="one_hot_y")
-        loss = softmax(cg, nn_output, y_train, X.shape[1], "loss_softmax")
+        loss = softmax(cg, nn_output, y_train, "loss_softmax")
 
         ctx = SimulationContext()
         sgd = MomentumSgdOptimizer(learning_rate=0.05)
         batch_size=256
-        for epoch in range(0, 800):
+        for epoch in range(0, 50):
             indexes = np.arange(0, len(X))
             np.random.shuffle(indexes)
             train_x = X[indexes]
@@ -113,12 +113,12 @@ class SgdOptimizerTest(unittest.TestCase):
         svm_output.name = "svm_output"
 
         y_train = cg.constant(name="one_hot_y")
-        loss = hinge(cg, svm_output, y_train, X.shape[1], "loss_hinge")
+        loss = hinge(cg, svm_output, y_train, "loss_hinge")
 
         ctx = SimulationContext()
         sgd = SgdOptimizer(learning_rate=0.01)
         batch_size=256
-        for epoch in range(0, 500):
+        for epoch in range(0, 50):
             indexes = np.arange(0, len(X))
             np.random.shuffle(indexes)
             train_x = X[indexes]
