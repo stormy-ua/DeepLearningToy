@@ -48,7 +48,7 @@ class SgdOptimizerTest(unittest.TestCase):
                 batch_y = train_y[:, batch:batch + batch_size]
                 sgd.minimize(ctx, cg, {x_in: batch_x.T, y_train: batch_y})
 
-        ctx.forward(cg, {x_in: X.T, y_train: 1})
+        ctx.forward(cg, {x_in: X.T}, out=[nn_output])
         y_pred = np.argmax(ctx[nn_output].value, axis=0)
         accuracy = np.sum(y_pred == y) / len(y)
 
@@ -87,7 +87,7 @@ class SgdOptimizerTest(unittest.TestCase):
                 batch_y = train_y[:, batch:batch + batch_size]
                 sgd.minimize(ctx, cg, {x_in: batch_x.T, y_train: batch_y})
 
-        ctx.forward(cg, {x_in: X.T, y_train: 1})
+        ctx.forward(cg, {x_in: X.T}, out=[nn_output])
         y_pred = np.argmax(ctx[nn_output].value, axis=0)
         accuracy = np.sum(y_pred == y) / len(y)
 
@@ -128,7 +128,7 @@ class SgdOptimizerTest(unittest.TestCase):
                 batch_y = train_y[:, batch:batch + batch_size]
                 sgd.minimize(ctx, cg, {x_in: batch_x.T, y_train: batch_y})
 
-        ctx.forward(cg, {x_in: X.T, y_train: 1})
+        ctx.forward(cg, {x_in: X.T}, out=[svm_output])
         y_pred = np.argmax(ctx[svm_output].value, axis=0)
         accuracy = np.sum(y_pred == y) / len(y)
 

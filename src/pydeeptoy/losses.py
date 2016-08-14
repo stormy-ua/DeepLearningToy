@@ -13,6 +13,7 @@ def softmax(cg: ComputationalGraph, x: Connection, one_hot_y: Connection, name="
     div2 = cg.div(reduce_sum3, cg.shape(x, 1), name=name)
     return div2
 
+
 def hinge(cg: ComputationalGraph, x: Connection, one_hot_y: Connection, name=""):
     f2 = cg.multiply(x, one_hot_y)
     f3 = cg.reduce_sum(f2, axis=0)

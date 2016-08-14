@@ -1,4 +1,5 @@
 from pydeeptoy.nodes import *
+from itertools import chain
 
 
 class ComputationalGraph:
@@ -19,11 +20,21 @@ class ComputationalGraph:
     def input_variables(self):
         return [n for n in self.inputs if isinstance(n, Variable)]
 
-    def get_adjacent_nodes(self, node: Node):
-        return [self.adjacencyOutMap[output] for output in node.outputs if output in self.adjacencyOutMap]
+    def get_adjacent_out_nodes(self, node: Node):
+        return chain.from_iterable([self.adjacencyInMap[output] for output in node.outputs if output in self.adjacencyInMap])
+
+    def get_adjacent_in_nodes(self, node: Node):
+        return chain.from_iterable([self.adjacencyOutMap[input] for input in node.inputs if input in self.adjacencyOutMap])
 
     def add_input_connection(self, connection: Connection, operation: Node):
-        self.adjacencyInMap[connection] = operation
+        if connection not in self.adjacencyInMap:
+            self.adjacencyInMap[connection] = list()
+        self.adjacencyInMap[connection].append(operation)
+
+    def add_output_connection(self, connection: Connection, operation: Node):
+        if connection not in self.adjacencyOutMap:
+            self.adjacencyOutMap[connection] = list()
+        self.adjacencyOutMap[connection].append(operation)
 
     @staticmethod
     def variable(name="", init_value=None, shape=None):
@@ -38,7 +49,7 @@ class ComputationalGraph:
         operation = op(in1, out)
         self.nodes.append(operation)
         self.add_input_connection(in1, operation)
-        self.adjacencyOutMap[out] = operation
+        self.add_output_connection(out, operation)
         return out
 
     def add_binary_op(self, op, in1: Connection, in2: Connection, name=""):
@@ -47,7 +58,7 @@ class ComputationalGraph:
         self.nodes.append(operation)
         self.add_input_connection(in1, operation)
         self.add_input_connection(in2, operation)
-        self.adjacencyOutMap[out] = operation
+        self.add_output_connection(out, operation)
         return out
 
     def sum(self, in1: Connection, in2: Connection):
@@ -73,7 +84,7 @@ class ComputationalGraph:
         operation = ExpressionNode(in1, out, expression)
         self.nodes.append(operation)
         self.add_input_connection(in1, operation)
-        self.adjacencyOutMap[out] = operation
+        self.add_output_connection(out, operation)
         return out
 
     def shape(self, in1: Connection, axis=0):
@@ -84,7 +95,7 @@ class ComputationalGraph:
         operation = ReduceSumNode(in1, out, axis)
         self.nodes.append(operation)
         self.add_input_connection(in1, operation)
-        self.adjacencyOutMap[out] = operation
+        self.add_output_connection(out, operation)
         return out
 
     def max(self, in1: Connection, in2: Connection):
@@ -95,7 +106,7 @@ class ComputationalGraph:
         operation = BroadcastNode(in1, out, axis)
         self.nodes.append(operation)
         self.add_input_connection(in1, operation)
-        self.adjacencyOutMap[out] = operation
+        self.add_output_connection(out, operation)
         return out
 
     def transpose(self, in1: Connection, *axes):
@@ -103,7 +114,7 @@ class ComputationalGraph:
         operation = TransposeNode(in1, out, axes)
         self.nodes.append(operation)
         self.add_input_connection(in1, operation)
-        self.adjacencyOutMap[out] = operation
+        self.add_output_connection(out, operation)
         return out
 
     def reshape(self, in1: Connection, newaxes):
@@ -111,7 +122,7 @@ class ComputationalGraph:
         operation = ReshapeNode(in1, out, newaxes)
         self.nodes.append(operation)
         self.add_input_connection(in1, operation)
-        self.adjacencyOutMap[out] = operation
+        self.add_output_connection(out, operation)
         return out
 
     def tensor_3d_to_cols(self, in1: Connection, receptive_field_size, stride=1, padding=1, name=""):
@@ -119,7 +130,7 @@ class ComputationalGraph:
         operation = Tensor3dToCol(in1, out, receptive_field_size, stride=stride, padding=padding)
         self.nodes.append(operation)
         self.add_input_connection(in1, operation)
-        self.adjacencyOutMap[out] = operation
+        self.add_output_connection(out, operation)
         return out
 
     def conv2d(self, x_in: Connection, w_in: Connection, receptive_field_size, filters_number, stride=1, padding=1, name=""):
