@@ -55,3 +55,13 @@ class ConvolutionTests(unittest.TestCase):
             ]]
         ))
         self.assertEqual(conv_value.shape, (sc[x].value.shape[0], sc[w].value.shape[1], 3, 3))
+
+    def test_tmp(self):
+        cg = ComputationalGraph()
+        x_in = cg.constant(np.ones(shape=(1, 1, 28, 28)))
+        w_in = 0.01*np.random.randn(16, 3)
+        conv = cg.conv2d(x_in, cg.constant(w_in), receptive_field_size=4, filters_number=3, stride=2, padding=0)
+        ctx = SimulationContext()
+        ctx.forward(cg)
+
+        assert 0==0

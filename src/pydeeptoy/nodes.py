@@ -269,7 +269,7 @@ class ReshapeNode(Node):
         data_bag[self.out].value = np.reshape(data_bag[self.in1].value, self.newshape)
 
     def backward(self, data_bag):
-        data_bag[self.in1].gradient = np.reshape(data_bag[self.out].gradient, self.in1.shape)
+        data_bag[self.in1].gradient = np.reshape(data_bag[self.out].gradient, data_bag[self.in1].value.shape)
 
 
 class Tensor3dToCol(Node):
@@ -289,12 +289,14 @@ class Tensor3dToCol(Node):
         i = np.tile(np.tile(np.repeat(np.arange(f, dtype=np.int32), f), c), output_height * output_width)
         k = np.tile(np.tile(np.tile(np.arange(f, dtype=np.int32), f), output_height * output_width), c)
 
-        j = np.tile(np.repeat(np.arange(c, dtype=np.int32), f * f), output_height * c)
+        j = np.tile(np.repeat(np.arange(c, dtype=np.int32), f * f), output_height * output_width)
 
         return slice(None), j, i + io, k + ko
 
     @staticmethod
     def get_output_dims(w, h, f, p, s):
+        assert (w - f + 2 * p) % s == 0
+
         output_width = (w - f + 2 * p) / s + 1
         output_height = (h - f + 2 * p) / s + 1
         return output_width, output_height
