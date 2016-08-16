@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple example</title>
+    <script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.4.0/fabric.min.js'></script>
+    <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
+    <style type='text/css'>
+        #sheet {
+            border:1px solid black;
+        }
+    </style>
+  </head>
+  <body>
+    <canvas id="sheet" width="400" height="400"></canvas>
+    <button type="button" id="clearButton">Clear</button>
+    <button type="button" id="postButton">Recognize</button>
+    <div id="predLabel">Prediction:</div>
+
+      <script type='text/javascript'>
+      var canvas = null;
+        $(document).ready(function() {
+            canvas = new fabric.Canvas('sheet');
+            canvas.isDrawingMode = true;
+            canvas.freeDrawingBrush.width = 25;
+            canvas.freeDrawingBrush.color = "#000000";
+        });
+
+        $('#clearButton').click(function() {
+            canvas.clear();
+        });
+
+        $('#postButton').click(function() {
+            //alert(canvas.toDataURL());
+
+            $.ajax({
+              type: "POST",
+              url: "recognizeDigit",
+              contentType: 'application/json;charset=UTF-8',
+              data: JSON.stringify({image: canvas.toDataURL()}),
+              success: function (data) {
+                $('#predLabel').text(data);
+              }
+            }).done(function(o) {
+              console.log('saved');
+            });
+        });
+    </script>
+  </body>
+</html>

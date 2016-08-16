@@ -147,6 +147,20 @@ class ExpNode(Node):
         data_bag[self.in1].gradient = np.exp(data_bag[self.in1].value) * data_bag[self.out].gradient
 
 
+class SqrtNode(Node):
+    def __init__(self, in1: Connection, out: Connection):
+        super().__init__([in1], [out])
+        self.in1 = in1
+        self.out = out
+
+    def forward(self, data_bag):
+        super().forward(data_bag)
+        data_bag[self.out].value = np.sqrt(data_bag[self.in1].value)
+
+    def backward(self, data_bag):
+        data_bag[self.in1].gradient = (.5/np.sqrt(data_bag[self.in1].value)) * data_bag[self.out].gradient
+
+
 class LogNode(Node):
     def __init__(self, in1: Connection, out: Connection):
         super().__init__([in1], [out])

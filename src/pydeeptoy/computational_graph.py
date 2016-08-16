@@ -21,10 +21,12 @@ class ComputationalGraph:
         return [n for n in self.inputs if isinstance(n, Variable)]
 
     def get_adjacent_out_nodes(self, node: Node):
-        return chain.from_iterable([self.adjacencyInMap[output] for output in node.outputs if output in self.adjacencyInMap])
+        return chain.from_iterable(
+            [self.adjacencyInMap[output] for output in node.outputs if output in self.adjacencyInMap])
 
     def get_adjacent_in_nodes(self, node: Node):
-        return chain.from_iterable([self.adjacencyOutMap[input] for input in node.inputs if input in self.adjacencyOutMap])
+        return chain.from_iterable(
+            [self.adjacencyOutMap[input] for input in node.inputs if input in self.adjacencyOutMap])
 
     def add_input_connection(self, connection: Connection, operation: Node):
         if connection not in self.adjacencyInMap:
@@ -76,6 +78,9 @@ class ComputationalGraph:
     def exp(self, in1: Connection):
         return self.add_unary_op(ExpNode, in1)
 
+    def sqrt(self, in1: Connection):
+        return self.add_unary_op(SqrtNode, in1)
+
     def log(self, in1: Connection):
         return self.add_unary_op(LogNode, in1)
 
@@ -90,7 +95,7 @@ class ComputationalGraph:
     def shape(self, in1: Connection, axis=0):
         return self.eval(in1, lambda x: x.shape[axis])
 
-    def reduce_sum(self, in1: Connection, axis = None):
+    def reduce_sum(self, in1: Connection, axis=None):
         out = Connection()
         operation = ReduceSumNode(in1, out, axis)
         self.nodes.append(operation)
@@ -133,13 +138,19 @@ class ComputationalGraph:
         self.add_output_connection(out, operation)
         return out
 
-    def conv2d(self, x_in: Connection, w_in: Connection, receptive_field_size, filters_number, stride=1, padding=1, name=""):
+    def conv2d(self, x_in: Connection, w_in: Connection, receptive_field_size, filters_number, stride=1, padding=1,
+               name=""):
         """
         Computes a 2-D convolution given 4-D input and filter tensors.
         """
         x_cols = self.tensor_3d_to_cols(x_in, receptive_field_size, stride=stride, padding=padding)
-        output = self.reshape(self.transpose(self.matrix_multiply(x_cols, w_in), 0, 2, 1), (-1, filters_number, receptive_field_size, receptive_field_size))
+        mul = self.transpose(self.matrix_multiply(x_cols, w_in), 0, 2, 1)
+
+        #output_width = self.sum(self.div(self.sum(self.sum(self.shape(x_in, 2), self.constant(-1 * receptive_field_size)),
+        #                        self.constant(2 * padding)), self.constant(stride)), self.constant(1))
+        # output_height = (h - f + 2 * p) / s + 1
+
+        output = self.reshape(mul, (-1, filters_number, receptive_field_size, receptive_field_size))
 
         output.name = name
         return output
-
