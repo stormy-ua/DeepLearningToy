@@ -11,7 +11,5 @@ WORKDIR /usr/src/app/DeepLearningToy/src/examples/digit_recognizer
 
 EXPOSE 5000
 
-ENTRYPOINT ["python"]
-
-CMD ["app.py"]
+CMD ["/bin/bash"]
 
