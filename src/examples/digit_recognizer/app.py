@@ -20,3 +20,6 @@ def recognize():
     image = request.json['image']
     digit = recognize_digit(image)
     return jsonify(int(digit))
+    
+if __name__ == '__main__':
+    app.run(debug=True,host='0.0.0.0')
