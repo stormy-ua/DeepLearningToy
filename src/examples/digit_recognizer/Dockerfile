@@ -9,9 +9,9 @@ RUN git clone https://github.com/stormy-ua/DeepLearningToy.git
 
 WORKDIR /usr/src/app/DeepLearningToy/src/examples/digit_recognizer
 
-EXPOSE 8081
+EXPOSE 5000
 
-ENV FLASK_APP=app.py
+ENTRYPOINT ["python"]
 
-CMD flask run --host=0.0.0.0 --port=8081
+CMD ["app.py"]
 
