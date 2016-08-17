@@ -6,7 +6,6 @@
 
 [![Build Status](https://travis-ci.org/stormy-ua/DeepLearningToy.svg?branch=master)](https://travis-ci.org/stormy-ua/DeepLearningToy)
 [![PyPI](https://img.shields.io/pypi/v/nine.svg?maxAge=2592000)](https://pypi.python.org/pypi/pydeeptoy)
-[![PyPI](https://img.shields.io/pypi/dm/Django.svg?maxAge=2592000)](https://pypi.python.org/pypi/pydeeptoy)
 
 ## Architecture
 There are several core ideas used by the framework: [computational graph](http://colah.github.io/posts/2015-08-Backprop/), forward propagation, [loss/cost function](https://en.wikipedia.org/wiki/Loss_function), [gradient descent](https://en.wikipedia.org/wiki/Gradient_descent), and [backward propagation](http://neuralnetworksanddeeplearning.com/chap2.html).
