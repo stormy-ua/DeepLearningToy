@@ -9,8 +9,8 @@ import scipy.misc as sp
 import matplotlib.pyplot as plt
 import dill as pickle
 
-import sys
-sys.path.append('/Users/kirill/Documents/Projects/DeepLearningToy/src')
+#import sys
+#sys.path.append('/Users/kirill/Documents/Projects/DeepLearningToy/src')
 
 from pydeeptoy.networks import *
 from pydeeptoy.optimizers import *
