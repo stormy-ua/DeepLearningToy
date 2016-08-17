@@ -6,7 +6,7 @@ import numpy as np
 from skimage import color
 from skimage import io
 import scipy.misc as sp
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import dill as pickle
 
 #import sys
@@ -23,7 +23,7 @@ def recognize_digit(base64image):
     image_array = np.asarray(im)
     image_array = np.sum(image_array, axis=2)
     image_array = sp.imresize(image_array, (28, 28))
-    plt.imshow(image_array, cmap='gray')
+    #plt.imshow(image_array, cmap='gray')
 
     estimator = pickle.load(open("digit.recognizer.mlp.estimator", "rb"))
     digit = estimator.predict(image_array.reshape(-1))
