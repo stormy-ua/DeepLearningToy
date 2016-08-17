@@ -11,7 +11,7 @@ WORKDIR /usr/src/app/DeepLearningToy/src/examples/digit_recognizer
 
 EXPOSE 8081
 
-FLASK_APP=app.py
+ENV FLASK_APP=app.py
 
 CMD flask run --host=0.0.0.0 --port=8081
 
