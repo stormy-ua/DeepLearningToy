@@ -26,5 +26,5 @@ def recognize_digit(base64image):
     #plt.imshow(image_array, cmap='gray')
 
     estimator = pickle.load(open("digit.recognizer.mlp.estimator", "rb"))
-    digit = estimator.predict(image_array.reshape(-1))
-    return digit
+    probs = estimator.predict_probs(np.expand_dims(image_array.reshape(-1), axis=0))[:, 0]
+    return probs

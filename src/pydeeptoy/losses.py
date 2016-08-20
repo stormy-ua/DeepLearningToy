@@ -1,16 +1,18 @@
 from pydeeptoy.computational_graph import *
 
 
-def softmax(cg: ComputationalGraph, x: Connection, one_hot_y: Connection, name=""):
+def softmax(cg: ComputationalGraph, x: Connection, name=""):
     exp1 = cg.exp(x)
-    reduce_sum1 = cg.reduce_sum(exp1, axis=0)
-    mul1 = cg.multiply(exp1, one_hot_y)
-    reduce_sum2 = cg.reduce_sum(mul1, axis=0)
-    div1 = cg.div(reduce_sum2, reduce_sum1)
-    log1 = cg.log(div1)
+    reduce_sum1 = cg.broadcast(cg.reduce_sum(exp1, axis=0), axis = 0)
+    div1 = cg.div(exp1, reduce_sum1, name=name)
+    return div1
+
+
+def cross_entropy(cg: ComputationalGraph, x: Connection, one_hot_y: Connection, name=""):
+    log1 = cg.multiply(cg.log(x), one_hot_y)
     mul2 = cg.multiply(log1, cg.constant(-1))
     reduce_sum3 = cg.reduce_sum(mul2)
-    div2 = cg.div(reduce_sum3, cg.shape(x, 1), name=name)
+    div2 = cg.div(reduce_sum3, cg.shape(x, 1))
     return div2
 
 

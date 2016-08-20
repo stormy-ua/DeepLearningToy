@@ -208,18 +208,18 @@ class ReduceSumNode(Node):
 class BroadcastNode(Node):
     def __init__(self, in1: Connection, out: Connection, axis=1):
         super().__init__([in1], [out])
-        if axis != 1:
-            raise Exception("Axis other than 1 are not supported for now")
+        if axis != 1 and axis != 0:
+            raise Exception("Axis other than 0 or 1 are not supported for now")
         self.in1 = in1
         self.out = out
         self.axis = axis
 
     def forward(self, data_bag):
         super().forward(data_bag)
-        data_bag[self.out].value = data_bag[self.in1].value[:, np.newaxis]
+        data_bag[self.out].value = np.expand_dims(data_bag[self.in1].value, self.axis)
 
     def backward(self, data_bag):
-        data_bag[self.in1].gradient = np.sum(data_bag[self.out].gradient, axis=1)
+        data_bag[self.in1].gradient = np.sum(data_bag[self.out].gradient, axis=self.axis)
 
 
 class MatrixMultiplyNode(Node):

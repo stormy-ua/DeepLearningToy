@@ -4,10 +4,20 @@
     <title>Simple example</title>
     <script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.4.0/fabric.min.js'></script>
     <script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
+    <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"></script>
     <style type='text/css'>
         #sheet {
             border:1px solid black;
         }
+
+      .chart div {
+            font: 10px sans-serif;
+            background-color: steelblue;
+            text-align: right;
+            padding: 3px;
+            margin: 1px;
+            color: white;
+      }
     </style>
   </head>
   <body>
@@ -15,6 +25,10 @@
     <button type="button" id="clearButton">Clear</button>
     <button type="button" id="postButton">Recognize</button>
     <div id="predLabel">Prediction:</div>
+
+    <div class="chart">
+    </div>
+
 
       <script type='text/javascript'>
       var canvas = null;
@@ -38,7 +52,34 @@
               contentType: 'application/json;charset=UTF-8',
               data: JSON.stringify({image: canvas.toDataURL()}),
               success: function (data) {
-                $('#predLabel').text(data);
+                $('#predLabel').text(data.digit);
+
+                //parseFloat(data.probs.replace('[', '').replace(']', '').split(', ')[0])
+                var ddata = [];
+                strProbs = data.probs.replace('[', '').replace(']', '').split(', ');
+                for(var i = 0; i < strProbs.length; ++i) {
+                    ddata.push(parseFloat(strProbs[i]));
+                }
+
+                var x = d3.scaleLinear()
+                  .domain([0, d3.max(ddata)])
+                  .range([0, 800]);
+
+               d3.select(".chart")
+                  .selectAll("div")
+                    .data(ddata)
+                  .enter().append("div")
+                    .style("width", function(d) { return x(d) + "px"; })
+                    .style("height", function(d) { return "10px"; });
+                    //.text(function(d) { return d; });
+
+               d3.select(".chart")
+                  .selectAll("div")
+                    .data(ddata)
+                    .style("width", function(d) { return x(d) + "px"; });
+                    //.text(function(d) { return d; });
+
+                //$('#predLabel2').text(data.probs);
               }
             }).done(function(o) {
               console.log('saved');

@@ -28,11 +28,10 @@ class SgdOptimizerTest(unittest.TestCase):
 
         cg = ComputationalGraph()
         x_in = cg.constant(name="X.T")
-        nn_output = neural_network(cg, x_in, X.shape[1], 64, 10)
-        nn_output.name = "nn_output"
+        nn_output = softmax(cg, neural_network(cg, x_in, X.shape[1], 64, 10), "nn_output")
 
         y_train = cg.constant(name="one_hot_y")
-        loss = softmax(cg, nn_output, y_train, "loss_softmax")
+        loss = cross_entropy(cg, nn_output, y_train, "loss_cross_entropy")
 
         ctx = SimulationContext()
 
@@ -68,11 +67,10 @@ class SgdOptimizerTest(unittest.TestCase):
 
         cg = ComputationalGraph()
         x_in = cg.constant(name="X.T")
-        nn_output = neural_network(cg, x_in, X.shape[1], 64, 3)
-        nn_output.name = "nn_output"
+        nn_output = softmax(cg, neural_network(cg, x_in, X.shape[1], 64, 3), name="nn_output")
 
         y_train = cg.constant(name="one_hot_y")
-        loss = softmax(cg, nn_output, y_train, "loss_softmax")
+        loss = cross_entropy(cg, nn_output, y_train, "loss_cross_entropy")
 
         ctx = SimulationContext()
         sgd = MomentumSgdOptimizer(learning_rate=0.05)

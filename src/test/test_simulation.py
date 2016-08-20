@@ -24,11 +24,11 @@ class SimulationTests(unittest.TestCase):
         context.forward_backward(cg, {in1: 1, in2: 2})
         self.assertEqual(context[in1].gradient, .5)
 
-    def test_forward_softmax(self):
+    def test_forward_softmax_with_cross_entropy(self):
         cg = ComputationalGraph()
         x = cg.variable()
         one_hot_y = cg.variable()
-        cost = softmax(cg, x, one_hot_y)
+        cost = cross_entropy(cg, softmax(cg, x), one_hot_y)
         ctx = SimulationContext()
         ctx.forward(cg, {x: np.array([-2.85, 0.86, 0.28])[:, np.newaxis],
                                          one_hot_y: np.array([0., 0., 1.])[:, np.newaxis]})
@@ -38,7 +38,7 @@ class SimulationTests(unittest.TestCase):
         cg = ComputationalGraph()
         x = cg.variable()
         one_hot_y = cg.variable()
-        cost = softmax(cg, x, one_hot_y)
+        cost = cross_entropy(cg, softmax(cg, x), one_hot_y)
         ctx = SimulationContext()
         ctx.forward_backward(cg, {x: np.array([-2.85, 0.86, 0.28])[:, np.newaxis],
                                   one_hot_y: np.array([0., 0., 1.])[:, np.newaxis]})
