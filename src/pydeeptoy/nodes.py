@@ -68,9 +68,10 @@ class Constant(Connection):
 class Node:
     __metaclass__ = ABCMeta
 
-    def __init__(self, inputs=[], outputs=[]):
+    def __init__(self, name, inputs=[], outputs=[]):
         self.inputs = inputs
         self.outputs = outputs
+        self.name = name
 
     @abstractmethod
     def forward(self, data_bag):
@@ -83,10 +84,13 @@ class Node:
         self.forward(data_bag)
         self.backward(data_bag)
 
+    def __str__(self):
+        return self.name
+
 
 class SumNode(Node):
     def __init__(self, in1: Connection, in2: Connection, out: Connection):
-        super().__init__([in1, in2], [out])
+        super().__init__("sum", [in1, in2], [out])
         self.in1 = in1
         self.in2 = in2
         self.out = out
@@ -102,7 +106,7 @@ class SumNode(Node):
 
 class MultiplyNode(Node):
     def __init__(self, in1: Connection, in2: Connection, out: Connection):
-        super().__init__([in1, in2], [out])
+        super().__init__("multiply", [in1, in2], [out])
         self.in1 = in1
         self.in2 = in2
         self.out = out
@@ -118,7 +122,7 @@ class MultiplyNode(Node):
 
 class DivNode(Node):
     def __init__(self, in1: Connection, in2: Connection, out: Connection):
-        super().__init__([in1, in2], [out])
+        super().__init__("div", [in1, in2], [out])
         self.in1 = in1
         self.in2 = in2
         self.out = out
@@ -135,7 +139,7 @@ class DivNode(Node):
 
 class ExpNode(Node):
     def __init__(self, in1: Connection, out: Connection):
-        super().__init__([in1], [out])
+        super().__init__("exp", [in1], [out])
         self.in1 = in1
         self.out = out
 
@@ -149,7 +153,7 @@ class ExpNode(Node):
 
 class SqrtNode(Node):
     def __init__(self, in1: Connection, out: Connection):
-        super().__init__([in1], [out])
+        super().__init__("sqrt", [in1], [out])
         self.in1 = in1
         self.out = out
 
@@ -163,7 +167,7 @@ class SqrtNode(Node):
 
 class LogNode(Node):
     def __init__(self, in1: Connection, out: Connection):
-        super().__init__([in1], [out])
+        super().__init__("log", [in1], [out])
         self.in1 = in1
         self.out = out
 
@@ -177,7 +181,7 @@ class LogNode(Node):
 
 class ExpressionNode(Node):
     def __init__(self, in1: Connection, out: Connection, expression):
-        super().__init__([in1], [out])
+        super().__init__("eval", [in1], [out])
         self.in1 = in1
         self.out = out
         self.expression = expression
@@ -192,7 +196,7 @@ class ExpressionNode(Node):
 
 class ReduceSumNode(Node):
     def __init__(self, in1: Connection, out: Connection, axis=None):
-        super().__init__([in1], [out])
+        super().__init__("reduce_sum", [in1], [out])
         self.in1 = in1
         self.out = out
         self.axis = axis
@@ -207,9 +211,7 @@ class ReduceSumNode(Node):
 
 class BroadcastNode(Node):
     def __init__(self, in1: Connection, out: Connection, axis=1):
-        super().__init__([in1], [out])
-        if axis != 1 and axis != 0:
-            raise Exception("Axis other than 0 or 1 are not supported for now")
+        super().__init__("broadcast", [in1], [out])
         self.in1 = in1
         self.out = out
         self.axis = axis
@@ -224,7 +226,7 @@ class BroadcastNode(Node):
 
 class MatrixMultiplyNode(Node):
     def __init__(self, in1: Connection, in2: Connection, out: Connection):
-        super().__init__([in1, in2], [out])
+        super().__init__("mat_mul", [in1, in2], [out])
         self.in1 = in1
         self.in2 = in2
         self.out = out
@@ -240,7 +242,7 @@ class MatrixMultiplyNode(Node):
 
 class MaxNode(Node):
     def __init__(self, in1: Connection, in2: Connection, out: Connection):
-        super().__init__([in1, in2], [out])
+        super().__init__("max", [in1, in2], [out])
         self.in1 = in1
         self.in2 = in2
         self.out = out
@@ -258,7 +260,7 @@ class MaxNode(Node):
 
 class TransposeNode(Node):
     def __init__(self, in1: Connection, out: Connection, axes):
-        super().__init__([in1], [out])
+        super().__init__("transpose", [in1], [out])
         self.in1 = in1
         self.out = out
         self.axes = axes
@@ -273,7 +275,7 @@ class TransposeNode(Node):
 
 class ReshapeNode(Node):
     def __init__(self, in1: Connection, out: Connection, newshape):
-        super().__init__([in1], [out])
+        super().__init__("reshape", [in1], [out])
         self.in1 = in1
         self.out = out
         self.newshape = newshape
@@ -288,7 +290,7 @@ class ReshapeNode(Node):
 
 class Tensor3dToCol(Node):
     def __init__(self, in1: Connection, out: Connection, receptive_field_size, stride=1, padding=1):
-        super().__init__([in1], [out])
+        super().__init__("tensor_3d_to_col", [in1], [out])
         self.in1 = in1
         self.out = out
         self.receptive_field_size = receptive_field_size

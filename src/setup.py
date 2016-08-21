@@ -10,7 +10,7 @@ setup(
   url = 'https://github.com/stormy-ua/DeepLearningToy/tree/master/src/pydeeptoy', # use the URL to the github repo
   #download_url = 'https://github.com/peterldowns/mypackage/tarball/0.1', # I'll explain this in a second
   keywords = ['machine learning', 'deep learning', 'neural network'], # arbitrary keywords
-  classifiers = []
+  classifiers = []#, requires=['sklearn']
 )
 
 # Execute the follwoing two commands in order to push the package into the PyPI:

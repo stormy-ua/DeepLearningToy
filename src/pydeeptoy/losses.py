@@ -12,7 +12,7 @@ def cross_entropy(cg: ComputationalGraph, x: Connection, one_hot_y: Connection, 
     log1 = cg.multiply(cg.log(x), one_hot_y)
     mul2 = cg.multiply(log1, cg.constant(-1))
     reduce_sum3 = cg.reduce_sum(mul2)
-    div2 = cg.div(reduce_sum3, cg.shape(x, 1))
+    div2 = cg.div(reduce_sum3, cg.shape(x, 1), name=name)
     return div2
 
 
