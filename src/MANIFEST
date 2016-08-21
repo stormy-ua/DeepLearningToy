@@ -12,6 +12,7 @@ pydeeptoy/optimizers.py
 pydeeptoy/simulation.py
 test/test_activations.py
 test/test_computational_graph.py
+test/test_json.py
 test/test_losses.py
 test/test_nodes.py
 test/test_optimizers.py

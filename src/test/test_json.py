@@ -26,5 +26,3 @@ class JsonSerializerTests(unittest.TestCase):
 
         serializer = JsonSerializer()
         json = serializer.serialize(cg)
-
-        assert json == ""
