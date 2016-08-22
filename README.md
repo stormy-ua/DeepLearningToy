@@ -69,7 +69,7 @@ Loss functions are used as a mesure of the model performance. Usually, it is jus
 
 It is important to be able to visualize a complex computational graph. First, it helps to understand how a model works. Second, having a computational graph in the form of a visualization might help with debugging and finding an issue.
 
-[The example](../master/src/examples/visualization/) is demonstrating how to render a computational graph on the web page using [d3.js](http://d3js.org/) library on the frontend and [Flask](http://flask.pocoo.org) web framework on the backend. Interactive demo is [here](http://quantumtunnel.xyz/comp_graph.html) and the screenshot with the rendered computational graph on the demo page:
+[The example](../master/src/examples/visualization/) is demonstrating how to render a computational graph on the web page using [d3.js](http://d3js.org/) library on the frontend and [Flask](http://flask.pocoo.org) web framework on the backend. Interactive demo is [here](http://quantumtunnel.xyz/comp_graph.html). It renders computational graph of the 4-layer neural network:
 
 ![alt text](../master/comp_graph_visualization.png)
 
