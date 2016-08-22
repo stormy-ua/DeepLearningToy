@@ -65,6 +65,14 @@ Loss functions are used as a mesure of the model performance. Usually, it is jus
 * [Softmax](https://en.wikipedia.org/wiki/Softmax_function)
 * [Hinge](https://en.wikipedia.org/wiki/Hinge_loss)
 
+## Computational Graph Visualization
+
+It is important to be able to visualize a complex computational graph. First, it helps to understand how a model works. Second, having a computational graph in the form of a visualization might help with debugging and finding an issue.
+
+[The example](../master/src/examples/visualization/) is demonstrating how to render a computational graph on the web page using [d3.js](http://d3js.org/) library on the frontend and [Flask](http://flask.pocoo.org) web framework on the backend. Interactive demo is [here](http://quantumtunnel.xyz/comp_graph.html) and the screenshot with the rendered computational graph on the demo page:
+
+![alt text](../master/comp_graph_visualization.png)
+
 ## Usage Examples
 
 > The set of primitive building blocks provided by the framework could be used to build robust estimators. The benefit of using the framework is that you do not have to implement forward/backward propagation from scratch for every kind of an estimator.
