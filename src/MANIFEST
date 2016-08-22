@@ -10,6 +10,8 @@ pydeeptoy/networks.py
 pydeeptoy/nodes.py
 pydeeptoy/optimizers.py
 pydeeptoy/simulation.py
+pydeeptoy/io_utils/__init__.py
+pydeeptoy/io_utils/json_io.py
 test/test_activations.py
 test/test_computational_graph.py
 test/test_json.py

@@ -208,6 +208,9 @@ class ReduceSumNode(Node):
     def backward(self, data_bag):
         data_bag[self.in1].gradient = np.ones(shape=data_bag[self.in1].value.shape) * data_bag[self.out].gradient
 
+    def __str__(self):
+        return super().__str__() + "(axis={})".format(self.axis)
+
 
 class BroadcastNode(Node):
     def __init__(self, in1: Connection, out: Connection, axis=1):
@@ -222,6 +225,9 @@ class BroadcastNode(Node):
 
     def backward(self, data_bag):
         data_bag[self.in1].gradient = np.sum(data_bag[self.out].gradient, axis=self.axis)
+
+    def __str__(self):
+        return super().__str__() + "(axis={})".format(self.axis)
 
 
 class MatrixMultiplyNode(Node):
@@ -272,6 +278,9 @@ class TransposeNode(Node):
     def backward(self, data_bag):
         data_bag[self.in1].gradient = np.transpose(data_bag[self.out].gradient, self.axes)
 
+    def __str__(self):
+        return super().__str__() + "(axes={})".format(self.axes)
+
 
 class ReshapeNode(Node):
     def __init__(self, in1: Connection, out: Connection, newshape):
@@ -286,6 +295,9 @@ class ReshapeNode(Node):
 
     def backward(self, data_bag):
         data_bag[self.in1].gradient = np.reshape(data_bag[self.out].gradient, data_bag[self.in1].value.shape)
+
+    def __str__(self):
+        return super().__str__() + "(shape={})".format(self.newshape)
 
 
 class Tensor3dToCol(Node):

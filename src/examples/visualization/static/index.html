@@ -5,7 +5,7 @@
 
 path.link {
   fill: none;
-  stroke: #000;
+  stroke: #ccc;
   stroke-width: 1.5px;
 }
 
@@ -38,7 +38,7 @@ var svg = d3.select('body').append('svg')
 
 var force = d3.layout.force()
     //.gravity(0.05)
-    .distance(20)
+    .distance(30)
     .charge(-400)
     .size([width, height])
     .nodes(nodes)
@@ -54,7 +54,7 @@ svg.append("svg:defs").selectAll("marker")
     .attr("markerWidth", 6)
     .attr("markerHeight", 6)
     .attr("orient", "auto")
-    //.style("fill","#ccc")
+    .style("fill","#ccc")
   .append("svg:path")
     .attr("d", "M0,-5L10,0L0,5");
 
