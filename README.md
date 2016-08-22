@@ -62,7 +62,7 @@ conv2d | Computes a 2-D convolution given 4-D input and filter tensors. |
 ## Loss Functions
 Loss functions are used as a mesure of the model performance. Usually, it is just a scalar value telling how well a model estimates output based on the input. Needless to say, a universal loss function which fits all model flavours doesn't exists. The following loss functions are implemented in the [losses](../master/src/pydeeptoy/losses.py) module:
 
-* [Softmax](https://en.wikipedia.org/wiki/Softmax_function)
+* [Cross Entropy](https://en.wikipedia.org/wiki/Cross_entropy)
 * [Hinge](https://en.wikipedia.org/wiki/Hinge_loss)
 
 ## Computational Graph Visualization
